@@ -13,10 +13,21 @@ public class Maze {
         this.mazeMatrix = new int[rows][columns];
         this.rows = rows;
         this.columns = columns;
+        this.start = calcPosition();
+        this.end = calcPosition();
     }
 
-    public int SetPosition(int row, int column, int num){
-        return this.mazeMatrix[row][column] = num;
+    public int getRows(){
+        return this.rows;
+    }
+
+    public int getColumns(){
+        return this.columns;
+    }
+
+
+    public void SetPosition(int row, int column, int num){
+        this.mazeMatrix[row][column] = num;
     }
 
     public boolean canPass(int row, int column) {
@@ -30,10 +41,12 @@ public class Maze {
         Random rand = new Random();
         int row = rand.nextInt(rows);
         int column = rand.nextInt(columns);
-        while (this.mazeMatrix[row][column] == 1 || (row != 0 && column != 0)) {
+        while (this.mazeMatrix[row][column] == 1 || (row != 0 && column != 0) ||
+                (start != null && start.getRowIndex() == row && start.getColumnIndex() == column)) {
             row = rand.nextInt(rows);
             column = rand.nextInt(columns);
         }
+
         return new Position(row, column);
     }
 
