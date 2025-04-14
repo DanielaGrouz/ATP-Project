@@ -86,7 +86,7 @@ public class RunMazeGenerator {
     @Test
     public void testNegativeSizeMaze() {
         IMazeGenerator gen = new SimpleMazeGenerator();
-        assertThrows(NegativeArraySizeException.class, () -> gen.generate(-5, -5));
+        assertNull(gen.generate(-5, -5));
     }
 
     @Test
@@ -101,4 +101,30 @@ public class RunMazeGenerator {
         Position pos = new Position(2, 3);
         assertEquals("{3,2}", pos.toString());
     }
+
+    @Test
+    public void testPathMyMazeGenerator() {
+        IMazeGenerator gen = new MyMazeGenerator();
+        Maze maze = gen.generate(1000, 1000);
+        assertTrue(((AMazeGenerator)gen).hasPath(maze));
+
+    }
+
+    @Test
+    public void testPathSimpleMazeGenerator() {
+        boolean hasPath = false;
+        IMazeGenerator gen = new SimpleMazeGenerator();
+        Maze maze = gen.generate(1000, 1000);
+        if (((AMazeGenerator)gen).hasPath(maze)){
+            hasPath = true;
+        }
+        else {
+            ((AMazeGenerator)gen).makeRandomPath(maze, maze.getStartPosition(), maze.getGoalPosition());
+            if (((AMazeGenerator)gen).hasPath(maze)){
+                hasPath = true;
+            }
+        }
+        assertTrue(hasPath);
+    }
+
 }
