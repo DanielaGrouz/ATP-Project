@@ -8,5 +8,7 @@ public interface ISearchable {
 
     AState getGoleState();
 
-    ArrayList<AState> getSuccessors(AState s);
+    ArrayList<AState> getAllPossibleStates(AState s);
+
+    //ArrayList<AState> getSuccessors(AState s);
 }

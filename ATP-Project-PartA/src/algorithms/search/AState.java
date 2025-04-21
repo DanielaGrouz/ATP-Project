@@ -2,12 +2,13 @@ package algorithms.search;
 
 public abstract class AState {
 
-    private String state;
+    private String stateName;
     private double cost;
-    public AState cameFrom;
+    private AState cameFrom;
 
-    public AState(String state){
-        this.state = state;
+    public AState(String stateName){
+        this.stateName = stateName;
+        this.cost = 0;
     }
 
     @Override
@@ -20,20 +21,31 @@ public abstract class AState {
         }
 
         AState otherState = (AState) other;
-        if (state == null) {
-            return otherState.state == null;
+        if (stateName == null) {
+            return otherState.stateName == null;
         }
         //else
-        return state.equals(otherState.state);
+        return stateName.equals(otherState.stateName);
     }
 
 
     @Override
     public int hashCode(){
-        if (state==null){
+        if (stateName == null){
             return 0;
         }
-        return state.hashCode(); //??????
+        return stateName.hashCode(); //??????
     }
 
+    public void setCost(double cost){
+        this.cost = cost;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public AState getCameFrom(){
+        return cameFrom;
+    }
 }

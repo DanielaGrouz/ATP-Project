@@ -29,7 +29,7 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
             if (currState.equals(goal)) {
                 finish = true;
             }
-            for (AState neighbor : problem.getSuccessors(currState)) {
+            for (AState neighbor : problem.getAllPossibleStates(currState)) {
                 if (!visitedNodes.contains(neighbor)) {
                     neighbor.cameFrom = currState;
                     stack.push(neighbor);
@@ -42,8 +42,7 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
         }
 
         //finish is true
-
-        bildSolution();
+        buildSolution();
         return solution;
 
 

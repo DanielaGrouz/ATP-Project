@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
 
-    protected HashSet<AState> visitedNodes;
+    protected HashSet<AState> visitedNodes; //?
     protected Solution solution;
     private int countVisitedNodes;
     protected AState start;
@@ -22,12 +22,16 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
     }
 
 
-    protected void bildSolution(){
+    protected void buildSolution(){
         AState current = goal;
         while (current != null) {
             solution.addStateToSolution(current);
-            current = current.cameFrom;
+            current = current.getCameFrom();
         }
+    }
+
+    protected void increaseVisitedNodes(){
+        this.countVisitedNodes++;
     }
 
 
