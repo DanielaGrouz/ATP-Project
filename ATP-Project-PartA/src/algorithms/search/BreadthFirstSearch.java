@@ -1,9 +1,25 @@
 package algorithms.search;
+
 import java.util.*;
 
-public class BreadthFirstSearch {
+public class BreadthFirstSearch extends ASearchingAlgorithm {
 
-    private Map<Integer, List<Integer>> adjList;
+    private Queue<AState> openList;
+
+    @Override
+    public Solution solve(ISearchable problem) {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return "Breadth First Search";
+    }
+
+
+
+
+    /*private Map<Integer, List<Integer>> adjList;
 
     public BreadthFirstSearch() {
         adjList = new HashMap<>();
@@ -35,7 +51,7 @@ public class BreadthFirstSearch {
                 }
             }
         }
-    }
+    }*/
 }
 
 
