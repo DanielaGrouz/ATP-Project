@@ -37,6 +37,11 @@ public abstract class AState {
         return state.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return state;
+    }
+
     public void setCost(int cost){
         this.cost = cost;
     }

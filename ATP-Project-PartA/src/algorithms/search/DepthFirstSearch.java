@@ -14,13 +14,12 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
     @Override
     public Solution solve(ISearchable problem) {
         if (problem==null){
-            return null;
+            return solution; //empty solution
         }
         start = problem.getStartState();
         goal = problem.getGoleState();
 
         stack.push(start);
-        visitedNodes.add(start);
         AState currState;
         while (!stack.isEmpty()) {
             currState = stack.pop();
@@ -28,11 +27,12 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
             visitedNodes.add(currState);
 
             if (currState.equals(goal)) {
+                goal.setCameFrom(currState.getCameFrom());
                 buildSolution();
                 break;
             }
             for (AState neighbor : problem.getAllPossibleStates(currState)) {
-                if (!visitedNodes.contains(neighbor)) {
+                if (!stack.contains(neighbor) && !visitedNodes.contains(neighbor)) {
                     neighbor.setCameFrom(currState);
                     stack.push(neighbor);
                 }

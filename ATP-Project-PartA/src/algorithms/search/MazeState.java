@@ -22,7 +22,7 @@ public class MazeState extends AState{
 //    @Override
 //    public boolean equals(Object obj) {
 //
-//        return true; /// לשנות?
+//        return true; /// לשנות? להתייחס לcost
 //    }
 
 }

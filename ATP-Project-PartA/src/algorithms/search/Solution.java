@@ -17,7 +17,13 @@ public class Solution {
         //שגיאה
     }
 
+    public void setSolutionPath(ArrayList<AState> list){
+        solutionPath = list;
+    }
+
     public ArrayList<AState> getSolutionPath(){
         return solutionPath;
     }
+
+
 }
