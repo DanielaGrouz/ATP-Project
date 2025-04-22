@@ -12,7 +12,7 @@ public class Solution {
 
     public void addStateToSolution(AState state){
         if (state != null){
-            solutionPath.add(0, state);
+            solutionPath.add(0,state);
         }
         //errors?
     }

@@ -1,6 +1,7 @@
 package algorithms.mazeGenerators;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 public class MyMazeGenerator extends AMazeGenerator {
@@ -24,61 +25,74 @@ public class MyMazeGenerator extends AMazeGenerator {
             return null;
         }
 
-        int height = 2 * rows + 1;
-        int width = 2 * columns + 1;
-        int[][] wallMaze = new int[height][width];
+        while(true) {
+            int height = 2 * rows + 1;
+            int width = 2 * columns + 1;
+            int[][] wallMaze = new int[height][width];
 
 
-        //Initialize all cells as walls (1)
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                wallMaze[i][j] = 1;
+            //Initialize all cells as walls (1)
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    wallMaze[i][j] = 1;
+                }
             }
-        }
 
-        //Pick a random starting cell
-        Random rand = new Random();
-        //make sure it is not out of bounds
-        int startRow = 2 * rand.nextInt(rows) + 1;
-        int startCol = 2 * rand.nextInt(columns) + 1;
-        wallMaze[startRow][startCol] = 0;
+            //Pick a random starting cell
+            Random rand = new Random();
+            //make sure it is not out of bounds
+            int startRow = 2 * rand.nextInt(rows) + 1;
+            int startCol = 2 * rand.nextInt(columns) + 1;
+            wallMaze[startRow][startCol] = 0;
 
-        // Add surrounding walls to wall list
-        ArrayList<Position> wallList = new ArrayList<>();
-        addNeighboringWalls(startRow, startCol, wallList, height, width);
+            // Add surrounding walls to wall list
+            ArrayList<Position> wallList = new ArrayList<>();
+            addNeighboringWalls(startRow, startCol, wallList, height, width);
 
-        while (!wallList.isEmpty()) {
-            // Pick a random wall and remove it from the wallList
-            Position wall = wallList.remove(rand.nextInt(wallList.size()));
+            while (!wallList.isEmpty()) {
+                // Pick a random wall and remove it from the wallList
+                Position wall = wallList.remove(rand.nextInt(wallList.size()));
 
-            int[][] directions = {
-                    {-1, 0}, {1, 0}, {0, -1}, {0, 1}
-            };
+                int[][] directions = {
+                        {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+                };
 
-            for (int[] dir : directions) {
-                int cell1Row = wall.getRowIndex() + dir[0];
-                int cell1Col = wall.getColumnIndex() + dir[1];
-                int cell2Row = wall.getRowIndex() - dir[0];
-                int cell2Col = wall.getColumnIndex() - dir[1];
+                for (int[] dir : directions) {
+                    int cell1Row = wall.getRowIndex() + dir[0];
+                    int cell1Col = wall.getColumnIndex() + dir[1];
+                    int cell2Row = wall.getRowIndex() - dir[0];
+                    int cell2Col = wall.getColumnIndex() - dir[1];
 
-                if (isInBounds(cell1Row, cell1Col, height, width) &&
-                        isInBounds(cell2Row, cell2Col, height, width)) {
+                    if (isInBounds(cell1Row, cell1Col, height, width) &&
+                            isInBounds(cell2Row, cell2Col, height, width)) {
 
-                    if (wallMaze[cell1Row][cell1Col] + wallMaze[cell2Row][cell2Col] == 1) { //only one of the two sides is part of the maze (0)
-                        wallMaze[wall.getRowIndex()][wall.getColumnIndex()] = 0; // Break the wall
-                        if (wallMaze[cell1Row][cell1Col] == 1) { //this cell part of the maze
-                            wallMaze[cell1Row][cell1Col] = 0;
-                            addNeighboringWalls(cell1Row, cell1Col, wallList, height, width);
-                        } else {
-                            wallMaze[cell2Row][cell2Col] = 0; //the other cell is part of the maze
-                            addNeighboringWalls(cell2Row, cell2Col, wallList, height, width);
+                        if (wallMaze[cell1Row][cell1Col] + wallMaze[cell2Row][cell2Col] == 1) { //only one of the two sides is part of the maze (0)
+                            wallMaze[wall.getRowIndex()][wall.getColumnIndex()] = 0; // Break the wall
+                            if (wallMaze[cell1Row][cell1Col] == 1) { //this cell part of the maze
+                                wallMaze[cell1Row][cell1Col] = 0;
+                                addNeighboringWalls(cell1Row, cell1Col, wallList, height, width);
+                            } else {
+                                wallMaze[cell2Row][cell2Col] = 0; //the other cell is part of the maze
+                                addNeighboringWalls(cell2Row, cell2Col, wallList, height, width);
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
+            Maze maze = extractLogicalMaze(wallMaze, rows, columns);
+            //check if the maze has path
+            if (hasPath(maze)) {
+                return maze;
+            } else {
+                //makes a random path in the maze
+                makeRandomPath(maze, maze.getStartPosition(), maze.getGoalPosition());
+                //check if the maze has path
+                if (hasPath(maze)) {
+                    return maze;
+                }
+            }
         }
-        return extractLogicalMaze(wallMaze, rows, columns);
     }
 
     //helper fun to generate func - method to check if the row and column in bounds of the WallMaze
