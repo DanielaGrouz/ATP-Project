@@ -1,7 +1,6 @@
 package test;
 import algorithms.mazeGenerators.*;
-import org.junit.Test;
-//import org.testng.annotations.Test;
+import org.testng.annotations.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RunMazeGenerator {

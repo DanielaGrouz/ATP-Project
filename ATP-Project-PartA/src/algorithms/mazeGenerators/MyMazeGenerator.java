@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class MyMazeGenerator extends AMazeGenerator {
 
+    //method to extract a logical maze from the generate maze func
     Maze extractLogicalMaze(int[][] maze, int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException {
         Maze result = new Maze(rows,columns);
 
@@ -16,6 +17,7 @@ public class MyMazeGenerator extends AMazeGenerator {
         return result;
     }
 
+    //method to generate a maze
     @Override
     public Maze generate(int rows, int columns) {
         if (rows <= 0 || columns <= 0){
@@ -79,10 +81,11 @@ public class MyMazeGenerator extends AMazeGenerator {
         return extractLogicalMaze(wallMaze, rows, columns);
     }
 
+    //helper fun to generate func - method to check if the row and column in bounds of the WallMaze
     boolean isInBounds(int row, int column, int height, int width) {
         return row >= 0 && row < height && column >= 0 && column < width;
     }
-
+    //helper fun to generate func - Add surrounding walls to wall list
     void addNeighboringWalls(int cellRow, int cellCol, ArrayList<Position> wallList, int height, int width) {
         int[][] directions = {
                 {-2, 0}, // up

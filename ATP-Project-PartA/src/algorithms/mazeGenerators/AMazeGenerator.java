@@ -2,13 +2,13 @@ package algorithms.mazeGenerators;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
-
 
 public abstract class AMazeGenerator implements IMazeGenerator {
 
+    //abstract method to generate maze
     public abstract Maze generate(int rows, int columns);
 
+    //measuring Algorithm Time in Millis
     public long measureAlgorithmTimeMillis(int rows, int columns) {
         long start = System.currentTimeMillis();
         generate(rows, columns);
@@ -16,6 +16,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
         return end - start;
     }
 
+    //return false if the maze has no path, else returns true
     public boolean hasPath(Maze maze) throws IndexOutOfBoundsException, IllegalArgumentException {
         int rows = maze.getRows();
         int columns = maze.getColumns();
@@ -51,6 +52,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
         return false; //there is no valid pass
     }
 
+    //receives a maze and start and end positions and makes a random path in the maze
     public void makeRandomPath(Maze maze, Position start, Position goal) throws IndexOutOfBoundsException, IllegalArgumentException {
         int currentRow = start.getRowIndex();
         int currentCol = start.getColumnIndex();

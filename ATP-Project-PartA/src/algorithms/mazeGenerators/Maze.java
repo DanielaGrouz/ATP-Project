@@ -38,6 +38,7 @@ public class Maze {
         this.mazeMatrix[row][column] = num;
     }
 
+    //return true if it is a valid move, else return false
     public boolean canPass(int row, int column) throws IndexOutOfBoundsException, IllegalArgumentException {
         if (row > rows || column > columns){
             throw new IndexOutOfBoundsException("index out of range");
@@ -51,6 +52,7 @@ public class Maze {
         return false;
     }
 
+    //calculates a random position in the maze walls
     public Position calcPosition(){
         Random rand = new Random();
         int row = rand.nextInt(rows);
