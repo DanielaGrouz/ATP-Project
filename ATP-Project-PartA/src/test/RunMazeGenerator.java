@@ -1,7 +1,6 @@
 package test;
 import algorithms.mazeGenerators.*;
 import org.junit.jupiter.api.Test;
-//import org.testng.annotations.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RunMazeGenerator {
@@ -108,7 +107,6 @@ public class RunMazeGenerator {
         IMazeGenerator gen = new MyMazeGenerator();
         Maze maze = gen.generate(1000, 1000);
         assertTrue(((AMazeGenerator)gen).hasPath(maze));
-
     }
 
     @Test
