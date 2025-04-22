@@ -1,26 +1,30 @@
 package algorithms.search;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
 
-    protected HashSet<AState> visitedNodes; //?
+    protected String name;
+    protected ArrayList<AState> visitedNodes; //?
     protected Solution solution;
-    private int countVisitedNodes;
+    private int numVisitedNodes;
     protected AState start;
     protected AState goal;
 
     public ASearchingAlgorithm(){
-        visitedNodes = new HashSet<>();
+        visitedNodes = new ArrayList<>();
         solution = new Solution();
-        countVisitedNodes = 0;
+        numVisitedNodes = 0;
     }
 
     @Override
     public int getNumberOfNodesEvaluated() {
-        return countVisitedNodes;
+        return numVisitedNodes;
     }
 
+    public String getName() {
+        return name;
+    }
 
     protected void buildSolution(){
         AState current = goal;
@@ -28,10 +32,6 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
             solution.addStateToSolution(current);
             current = current.getCameFrom();
         }
-    }
-
-    protected void increaseVisitedNodes(){
-        this.countVisitedNodes++;
     }
 
 

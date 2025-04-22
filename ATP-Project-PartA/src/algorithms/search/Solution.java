@@ -11,9 +11,11 @@ public class Solution {
     }
 
     public void addStateToSolution(AState state){
-        solutionPath.add(0, state);
+        if (state != null){
+            solutionPath.addFirst(state);
+        }
+        //שגיאה
     }
-
 
     public ArrayList<AState> getSolutionPath(){
         return solutionPath;

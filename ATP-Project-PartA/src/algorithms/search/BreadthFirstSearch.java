@@ -4,19 +4,21 @@ import java.util.*;
 
 public class BreadthFirstSearch extends ASearchingAlgorithm {
 
-    private Queue<AState> openList;
+    protected Queue<AState> queue;
+
+    public BreadthFirstSearch(){
+        createQueue();
+        name = "Breadth First Search";
+    }
 
     @Override
     public Solution solve(ISearchable problem) {
         return null;
     }
 
-    @Override
-    public String getName() {
-        return "Breadth First Search";
+    protected void createQueue() {
+        queue = new LinkedList<>();
     }
-
-
 
 
     /*private Map<Integer, List<Integer>> adjList;

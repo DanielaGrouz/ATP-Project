@@ -2,19 +2,19 @@ package algorithms.search;
 
 import java.util.*;
 
-public class BestFirstSearch extends ASearchingAlgorithm {
+public class BestFirstSearch extends BreadthFirstSearch {
 
     private PriorityQueue<AState> openList;
 
-
-    @Override
-    public Solution solve(ISearchable problem) {
-        return null;
+    public BestFirstSearch(){
+        super();
+        name = "Best First Search";
     }
 
+
     @Override
-    public String getName() {
-        return "Best First Search";
+    protected void createQueue() {
+        queue = new PriorityQueue<>();
     }
 
 

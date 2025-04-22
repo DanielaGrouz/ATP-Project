@@ -7,53 +7,41 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
     private Stack<AState> stack;
 
     public DepthFirstSearch(){
+        name = "Depth First Search";
         stack = new Stack<>();
-
     }
 
     @Override
     public Solution solve(ISearchable problem) {
-
+        if (problem==null){
+            return null;
+        }
         start = problem.getStartState();
         goal = problem.getGoleState();
-        boolean finish = false;
-
 
         stack.push(start);
-        while (!stack.isEmpty() && !finish) {
-            AState currState = stack.pop();
-
+        visitedNodes.add(start);
+        AState currState;
+        while (!stack.isEmpty()) {
+            currState = stack.pop();
             if (visitedNodes.contains(currState)){ continue; }
-
             visitedNodes.add(currState);
+
             if (currState.equals(goal)) {
-                finish = true;
+                buildSolution();
+                break;
             }
             for (AState neighbor : problem.getAllPossibleStates(currState)) {
                 if (!visitedNodes.contains(neighbor)) {
-                    neighbor.cameFrom = currState;
+                    neighbor.setCameFrom(currState);
                     stack.push(neighbor);
                 }
             }
 
         }
-        if (!finish){
-            return null;
-        }
 
-        //finish is true
-        buildSolution();
         return solution;
-
-
     }
-
-    @Override
-    public String getName() {
-        return "Depth First Search";
-    }
-
-
 
 
 

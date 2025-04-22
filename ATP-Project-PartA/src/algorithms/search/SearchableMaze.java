@@ -32,16 +32,20 @@ public class SearchableMaze implements ISearchable  {
 
         MazeState mState = (MazeState) aState;
         ArrayList<AState> possibleStates = new ArrayList<AState>();
-        //int[] direction : new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-        int[][] directions = {
-                {-1, 0}, // up
-                {1, 0},  // down
-                {0, -1}, // left
-                {0, 1},  // right
-        };
+        int[][] direction = {{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1}};
 
-
-
+        for (int i=0 ; i<8 ; i++){
+            //לראות שאין חריגה
+            MazeState newState = new MazeState(mState.getRow() + direction[i][0],mState.getCol() + direction[i][1]);
+            if (direction[i][0]==0 || direction[i][1]==0){
+                newState.setCost(mState.getCost() + 15);
+            }
+            else {
+                newState.setCost(mState.getCost() + 15);
+            }
+            newState.setCameFrom(aState);
+            possibleStates.add(newState);
+        }
 
         return possibleStates;
     }
