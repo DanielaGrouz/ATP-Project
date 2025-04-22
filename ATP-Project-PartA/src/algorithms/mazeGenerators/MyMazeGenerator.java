@@ -5,12 +5,12 @@ import java.util.Random;
 
 public class MyMazeGenerator extends AMazeGenerator {
 
-    Maze extractLogicalMaze(int[][] maze, int rows, int columns) {
+    Maze extractLogicalMaze(int[][] maze, int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException {
         Maze result = new Maze(rows,columns);
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                result.SetPosition(i,j,maze[2 * i + 1][2 * j + 1]);
+                result.setPosition(i,j,maze[2 * i + 1][2 * j + 1]);
             }
         }
         return result;
@@ -48,8 +48,6 @@ public class MyMazeGenerator extends AMazeGenerator {
         while (!wallList.isEmpty()) {
             // Pick a random wall and remove it from the wallList
             Position wall = wallList.remove(rand.nextInt(wallList.size()));
-            int r = wall.getRowIndex();
-            int c = wall.getColumnIndex();
 
             int[][] directions = {
                     {-1, 0}, {1, 0}, {0, -1}, {0, 1}
