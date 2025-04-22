@@ -16,7 +16,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
         return end - start;
     }
 
-    public boolean hasPath(Maze maze) {
+    public boolean hasPath(Maze maze) throws IndexOutOfBoundsException, IllegalArgumentException {
         int rows = maze.getRows();
         int columns = maze.getColumns();
 
@@ -51,8 +51,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
         return false; //there is no valid pass
     }
 
-    public void makeRandomPath(Maze maze, Position start, Position goal) {
-        Random rand = new Random();
+    public void makeRandomPath(Maze maze, Position start, Position goal) throws IndexOutOfBoundsException, IllegalArgumentException {
         int currentRow = start.getRowIndex();
         int currentCol = start.getColumnIndex();
 
@@ -78,7 +77,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
                     // Move to the new position
                     currentRow = newRow;
                     currentCol = newCol;
-                    maze.SetPosition(currentRow, currentCol, 0); // Mark the new position as part of the path
+                    maze.setPosition(currentRow, currentCol, 0); // Mark the new position as part of the path
                     break; //we move to a new position
                 }
             }
