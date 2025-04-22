@@ -32,7 +32,7 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
             solution.addStateToSolution(current);
             current = current.getCameFrom();
         }
+        numVisitedNodes = visitedNodes.size();
     }
-
 
 }
