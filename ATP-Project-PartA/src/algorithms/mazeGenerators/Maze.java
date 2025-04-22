@@ -29,7 +29,7 @@ public class Maze {
     }
 
     public void setPosition(int row, int column, int num) throws IndexOutOfBoundsException, IllegalArgumentException {
-        if (row > rows || column > columns){
+        if (row >= rows || column >= columns){
             throw new IndexOutOfBoundsException("index out of range");
         }
         else if (row < 0 || column < 0){
@@ -40,7 +40,7 @@ public class Maze {
 
     //return true if it is a valid move, else return false
     public boolean canPass(int row, int column) throws IndexOutOfBoundsException, IllegalArgumentException {
-        if (row > rows || column > columns){
+        if (row >= rows || column >= columns){
             throw new IndexOutOfBoundsException("index out of range");
         }
         else if (row < 0 || column < 0){

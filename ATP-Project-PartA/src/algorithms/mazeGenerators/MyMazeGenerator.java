@@ -22,7 +22,7 @@ public class MyMazeGenerator extends AMazeGenerator {
     @Override
     public Maze generate(int rows, int columns) {
         if (rows <= 0 || columns <= 0){
-            return null;
+            throw new IllegalArgumentException("row and column have to be positive numbers bigger than 0");
         }
 
         while(true) {

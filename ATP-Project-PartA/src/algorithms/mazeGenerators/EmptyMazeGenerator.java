@@ -6,7 +6,7 @@ public class EmptyMazeGenerator extends AMazeGenerator {
     @Override
     public Maze generate(int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException{
         if (rows <= 0 || columns <= 0){
-            return null;
+            throw new IllegalArgumentException("row and column have to be positive numbers bigger than 0");
         }
         Maze MazeMatrix = new Maze(rows, columns);
 
