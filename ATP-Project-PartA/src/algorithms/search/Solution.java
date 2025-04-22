@@ -14,7 +14,7 @@ public class Solution {
         if (state != null){
             solutionPath.addFirst(state);
         }
-        //שגיאה
+        //errors?
     }
 
     public void setSolutionPath(ArrayList<AState> list){
