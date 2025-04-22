@@ -18,7 +18,6 @@ public class RunSearchOnMaze {
         solveProblem(searchableMaze, new DepthFirstSearch());
         solveProblem(searchableMaze, new BestFirstSearch());
 
-
     }
 
     private static void solveProblem(ISearchable domain, ISearchingAlgorithm searcher) {

@@ -11,7 +11,6 @@ public class BestFirstSearch extends BreadthFirstSearch {
         name = "Best First Search";
     }
 
-
     @Override
     protected void createQueue() {
         queue = new PriorityQueue<>(Comparator.comparingInt(AState::getCost));

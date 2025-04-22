@@ -13,11 +13,10 @@ public class BreadthFirstSearch extends ASearchingAlgorithm {
 
     @Override
     public Solution solve(ISearchable problem) {
-        if (problem==null){
+
+        if (!prepareProblem(problem)){
             return solution; //empty solution
         }
-        start = problem.getStartState();
-        goal = problem.getGoleState();
 
         queue.add(start);
         AState currState;
@@ -27,9 +26,9 @@ public class BreadthFirstSearch extends ASearchingAlgorithm {
             visitedNodes.add(currState);
 
             if (currState.equals(goal)) {
-                goal.setCameFrom(currState.getCameFrom()); //or goal= currState
+                goal = currState; //goal.setCameFrom(currState.getCameFrom());
                 buildSolution();
-                break;
+                return solution;
             }
             for (AState neighbor : problem.getAllPossibleStates(currState)) {
                 if (!visitedNodes.contains(neighbor)) {
@@ -41,7 +40,6 @@ public class BreadthFirstSearch extends ASearchingAlgorithm {
         }
 
         return solution;
-
     }
 
     protected void createQueue() {

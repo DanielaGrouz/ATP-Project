@@ -6,7 +6,7 @@ public interface ISearchable {
 
     AState getStartState();
 
-    AState getGoleState();
+    AState getGoalState();
 
     ArrayList<AState> getAllPossibleStates(AState aState);
 
