@@ -14,7 +14,6 @@ class BestFirstSearchTest {
     void testNullProblem() {
         BestFirstSearch bestFirstSearch = new BestFirstSearch();
         assertThrows(IllegalArgumentException.class, () -> bestFirstSearch.solve(null));
-
     }
 
     @Test
