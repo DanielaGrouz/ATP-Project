@@ -4,8 +4,6 @@ import java.util.*;
 
 public class BestFirstSearch extends BreadthFirstSearch {
 
-    private PriorityQueue<AState> openList;
-
     public BestFirstSearch(){
         super();
         name = "Best First Search";

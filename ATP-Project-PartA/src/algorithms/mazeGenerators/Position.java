@@ -40,13 +40,4 @@ public class Position {
         return "{" + column + "," + row + "}";
     }
 
-    public void setRowIndex(int row){
-        this.row = row;
-    }
-
-    public void setColumnIndex(int column){
-        this.column = column;
-    }
-
-
 }

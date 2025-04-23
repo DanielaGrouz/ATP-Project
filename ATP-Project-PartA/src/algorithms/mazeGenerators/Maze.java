@@ -154,8 +154,9 @@ public class Maze {
      * @param start a position to set as start position
      * @param end a position to set as goal position
      */
-    public void setMazeMatrix(int[][] mazeMatrix, Position start, Position end){
-        this.mazeMatrix = mazeMatrix;
+    public void setMaze(int[][] mazeMatrix, Position start, Position end){
+        if (mazeMatrix!=null)
+            this.mazeMatrix = mazeMatrix;
         this.start = start;
         this.end = end;
     }

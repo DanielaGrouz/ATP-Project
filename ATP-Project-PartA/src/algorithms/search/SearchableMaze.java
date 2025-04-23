@@ -29,10 +29,9 @@ public class SearchableMaze implements ISearchable  {
 
     @Override
     public ArrayList<AState> getAllPossibleStates(AState aState) throws IllegalArgumentException{
-        if (!(aState instanceof MazeState)) {
+        if (!(aState instanceof MazeState mState)) {
             throw new IllegalArgumentException("Expected MazeState");
         }
-        MazeState mState = (MazeState) aState;
 
         ArrayList<AState> possibleStates = new ArrayList<AState>();
         int[][] direction = {{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1}};

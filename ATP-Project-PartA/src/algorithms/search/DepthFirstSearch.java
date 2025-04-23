@@ -26,7 +26,7 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
             visitedNodes.add(currState);
 
             if (currState.equals(goal)) {
-                goal = currState; //goal.setCameFrom(currState.getCameFrom());
+                goal = currState; //
                 buildSolution();
                 return solution;
             }
