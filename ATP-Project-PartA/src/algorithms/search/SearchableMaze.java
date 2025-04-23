@@ -38,7 +38,7 @@ public class SearchableMaze implements ISearchable  {
             int newRow = mState.getRow() + direction[i][0];
             int newCol = mState.getCol() + direction[i][1];
             if (0<=newRow && newRow<maze.getRows() && 0<=newCol && newCol<maze.getColumns()
-                    && maze.canPass(newRow,newCol)){ //לבדוק שלא חורג מהמבוך-חריגה?
+                    && maze.canPass(newRow,newCol)){
                 MazeState newState = new MazeState(newRow,newCol);
                 if (direction[i][0]==0 || direction[i][1]==0){
                     newState.setCost(mState.getCost() + 10);
