@@ -4,6 +4,13 @@ public class Position {
     private int row;
     private int column;
 
+    /**
+     * constructor to Position class - creates a position object
+     *
+     * @param row of the position
+     * @param column of the position
+     * @throws IllegalArgumentException if the number of row or column is negative
+     */
     public Position(int row, int column) throws IllegalArgumentException {
         if(row < 0 || column < 0){
             throw new IllegalArgumentException("row and column have to be positive numbers");

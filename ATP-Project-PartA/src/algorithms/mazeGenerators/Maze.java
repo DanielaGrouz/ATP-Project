@@ -10,6 +10,13 @@ public class Maze {
     private Position end;
 
 
+    /**
+     * constructor to Maze class - creates a maze object
+     *
+     * @param rows of the maze
+     * @param columns of the maze
+     * @throws IllegalArgumentException if the number of rows or columns is negative or zero
+     */
     public Maze(int rows, int columns) throws IllegalArgumentException {
         if(rows <= 0 || columns <= 0){
             throw new IllegalArgumentException("rows and columns have to be positive numbers");
