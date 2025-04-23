@@ -22,6 +22,19 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
         return numVisitedNodes;
     }
 
+
+    protected boolean prepareProblem(ISearchable problem) throws IllegalArgumentException{
+        if (problem==null){
+            throw new IllegalArgumentException("Problem cannot be null");
+        }
+        start = problem.getStartState();
+        goal = problem.getGoalState();
+        if (start==null || goal==null) {
+            return false;
+        }
+        return true;
+    }
+
     public String getName() {
         return name;
     }

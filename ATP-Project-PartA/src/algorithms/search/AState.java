@@ -28,7 +28,6 @@ public abstract class AState {
         return state.equals(otherState.state);
     }
 
-
     @Override
     public int hashCode(){
         if (state == null){

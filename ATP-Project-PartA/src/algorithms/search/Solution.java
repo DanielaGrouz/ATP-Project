@@ -7,18 +7,14 @@ public class Solution {
     private ArrayList<AState> solutionPath;
 
     public Solution(){
-        solutionPath = new ArrayList<AState>();
+        solutionPath = new ArrayList<>();
     }
 
     public void addStateToSolution(AState state){
-        if (state != null){
-            solutionPath.add(0,state);
+        if (state == null){
+            throw new IllegalArgumentException("Cannot add null state to the solution");
         }
-        //errors?
-    }
-
-    public void setSolutionPath(ArrayList<AState> list){
-        solutionPath = list;
+        solutionPath.add(0,state);
     }
 
     public ArrayList<AState> getSolutionPath(){

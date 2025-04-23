@@ -10,7 +10,7 @@ public class Maze {
     private Position end;
 
     public Maze(int rows, int columns) throws IllegalArgumentException {
-        if(rows < 0 || columns < 0){
+        if(rows <= 0 || columns <= 0){
             throw new IllegalArgumentException("rows and columns have to be positive numbers");
         }
         this.mazeMatrix = new int[rows][columns];
@@ -93,6 +93,13 @@ public class Maze {
             }
             System.out.println();
         }
+    }
+
+    //for tests only
+    public void setMazeMatrix(int[][] mazeMatrix, Position start, Position end){
+        this.mazeMatrix = mazeMatrix;
+        this.start = start;
+        this.end = end;
     }
 
 }
