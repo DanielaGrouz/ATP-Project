@@ -5,20 +5,18 @@ import java.util.ArrayList;
 public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
 
     protected String name;
-    protected ArrayList<AState> visitedNodes; //?
+    protected ArrayList<AState> visitedNodes;
     protected Solution solution;
-    private int numVisitedNodes;
     protected AState start;
     protected AState goal;
 
     /**
      * Constructs a new ASearchingAlgorithm.
-     * Initializes the visited nodes list, the solution object, and the visited nodes count.
+     * Initializes the visited nodes list and the solution object.
      */
     public ASearchingAlgorithm(){
         visitedNodes = new ArrayList<>();
         solution = new Solution();
-        numVisitedNodes = 0;
     }
 
     /**
@@ -28,11 +26,11 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
      */
     @Override
     public int getNumberOfNodesEvaluated() {
-        return numVisitedNodes;
+        return visitedNodes.size();
     }
 
     /**
-     * Prepares the search problem by setting the start and goal states.
+     * Helper function to prepares the search problem by setting the start and goal states.
      *
      * @param problem the searchable problem
      * @return true if the problem was successfully prepared, false otherwise (if start or goal is null)
@@ -60,7 +58,7 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
     }
 
     /**
-     * Builds the solution path by traversing back from the goal state to the start state,
+     * Helper function to builds the solution path by traversing back from the goal state to the start state,
      */
     protected void buildSolution(){
         AState current = goal;
@@ -68,7 +66,6 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm{
             solution.addStateToSolution(current);
             current = current.getCameFrom();
         }
-        numVisitedNodes = visitedNodes.size();
     }
 
 }
