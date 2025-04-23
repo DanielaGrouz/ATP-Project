@@ -9,6 +9,7 @@ public class Maze {
     private Position start;
     private Position end;
 
+
     public Maze(int rows, int columns) throws IllegalArgumentException {
         if(rows <= 0 || columns <= 0){
             throw new IllegalArgumentException("rows and columns have to be positive numbers");
@@ -20,10 +21,20 @@ public class Maze {
         this.end = calcPosition();
     }
 
+    /**
+     * returns the number of rows
+     *
+     * @return int that represents the number of rows
+     */
     public int getRows(){
         return this.rows;
     }
 
+    /**
+     * returns the number of columns
+     *
+     * @return int that represents the number of columns
+     */
     public int getColumns(){
         return this.columns;
     }

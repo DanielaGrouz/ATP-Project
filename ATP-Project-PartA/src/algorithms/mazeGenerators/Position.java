@@ -12,14 +12,29 @@ public class Position {
         this.row = row;
     }
 
+    /**
+     * returns the index of the row position
+     *
+     * @return  int that represents the index of the row position
+     */
     public int getRowIndex(){
         return this.row;
     }
 
+    /**
+     * returns the index of the column position
+     *
+     * @return int that represents the index of the column position
+     */
     public int getColumnIndex(){
         return this.column;
     }
 
+    /**
+     * returns the String representation of the position
+     *
+     * @return String that represents the position
+     */
     @Override
     public String toString() {
         return "{" + column + "," + row + "}";

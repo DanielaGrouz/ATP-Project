@@ -1,13 +1,20 @@
 package algorithms.mazeGenerators;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Random;
 
 public class MyMazeGenerator extends AMazeGenerator {
 
-    //method to extract a logical maze from the generate maze func
-    Maze extractLogicalMaze(int[][] maze, int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException {
+    /**
+     * helper func to method generate
+     * method to extract a logical maze from the generate maze func
+     *
+     * @param maze an empty array to contain the new logical maze
+     * @param rows is the number of rows in the maze
+     * @param columns is the number of columns in the maze
+     * @return Maze object created
+     */
+    public Maze extractLogicalMaze(int[][] maze, int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException {
         Maze result = new Maze(rows,columns);
 
         for (int i = 0; i < rows; i++) {
@@ -18,7 +25,13 @@ public class MyMazeGenerator extends AMazeGenerator {
         return result;
     }
 
-    //method to generate a maze
+    /**
+     * method to generate a maze
+     *
+     * @param rows is the number of rows in the maze
+     * @param columns is the number of columns in the maze
+     * @return Maze object created
+     */
     @Override
     public Maze generate(int rows, int columns) {
         if (rows <= 0 || columns <= 0){
@@ -95,10 +108,31 @@ public class MyMazeGenerator extends AMazeGenerator {
         }
     }
 
-    //helper fun to generate func - method to check if the row and column in bounds of the WallMaze
+    /**
+     * helper func to method generate
+     * method to check if the row and column in bounds of the WallMaze
+     *
+     * @param row is the row number to check
+     * @param column is the column number to check
+     * @param height is the height of the wall maze
+     * @param width is the width of the wall maze
+     * @return Maze object created
+     */
     boolean isInBounds(int row, int column, int height, int width) {
         return row >= 0 && row < height && column >= 0 && column < width;
     }
+
+    /**
+     * helper func to method generate
+     * method to add surrounding walls to wall list
+     *
+     * @param cellRow is the row number to add
+     * @param cellCol is the column number to add
+     * @param wallList id the list of walls
+     * @param height is the height of the wall maze
+     * @param width is the width of the wall maze
+     * @return Maze object created
+     */
     //helper fun to generate func - Add surrounding walls to wall list
     void addNeighboringWalls(int cellRow, int cellCol, ArrayList<Position> wallList, int height, int width) {
         int[][] directions = {

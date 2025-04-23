@@ -5,10 +5,22 @@ import java.util.Collections;
 
 public abstract class AMazeGenerator implements IMazeGenerator {
 
-    //abstract method to generate maze
+    /**
+     * An abstract method to generate maze
+     *
+     * @param rows is the number of rows in the maze
+     * @param columns is the number of columns in the maze
+     * @return Maze object
+     */
     public abstract Maze generate(int rows, int columns);
 
-    //measuring Algorithm Time in Millis
+    /**
+     * measuring Algorithm Time in Millis
+     *
+     * @param rows is the number of rows in the maze
+     * @param columns is the number of columns in the maze
+     * @return long with the result
+     */
     public long measureAlgorithmTimeMillis(int rows, int columns) {
         long start = System.currentTimeMillis();
         generate(rows, columns);
@@ -16,7 +28,14 @@ public abstract class AMazeGenerator implements IMazeGenerator {
         return end - start;
     }
 
-    //return false if the maze has no path, else returns true
+    /**
+     * Checks whether there is a valid path from the start position to the goal position in the given maze.
+     *
+     * @param maze the maze to be checked
+     * @return true if there is a valid path from the start to the goal position, otherwise false
+     * @throws IndexOutOfBoundsException if arguments rows and columns in func "canPass" are invalid
+     * @throws IllegalArgumentException if arguments rows and columns in func "canPass" are invalid
+     */
     public boolean hasPath(Maze maze) throws IndexOutOfBoundsException, IllegalArgumentException {
         int rows = maze.getRows();
         int columns = maze.getColumns();
@@ -52,7 +71,13 @@ public abstract class AMazeGenerator implements IMazeGenerator {
         return false; //there is no valid pass
     }
 
-    //receives a maze and start and end positions and makes a random path in the maze
+    /**
+     * receives a maze and start and end positions and makes a random path in the maze
+     *
+     * @param maze is the current maze
+     * @param start is the satrat position in the maze
+     * @param goal is the end position in the maze
+     */
     public void makeRandomPath(Maze maze, Position start, Position goal) throws IndexOutOfBoundsException, IllegalArgumentException {
         int currentRow = start.getRowIndex();
         int currentCol = start.getColumnIndex();

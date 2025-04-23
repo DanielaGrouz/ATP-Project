@@ -2,7 +2,13 @@ package algorithms.mazeGenerators;
 
 public class EmptyMazeGenerator extends AMazeGenerator {
 
-    //method to generate an empty maze
+    /**
+     * method to generate an empty maze
+     *
+     * @param rows is the number of rows in the maze
+     * @param columns is the number of columns in the maze
+     * @return Maze object created
+     */
     @Override
     public Maze generate(int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException{
         if (rows <= 0 || columns <= 0){
