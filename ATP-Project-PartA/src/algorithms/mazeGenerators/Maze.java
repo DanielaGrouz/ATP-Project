@@ -95,11 +95,8 @@ public class Maze {
         }
     }
 
-    //for tests only
-    public void setMazeMatrix(int[][] mazeMatrix, Position start, Position end){
+        public void setMazeMatrix(int[][] mazeMatrix){
         this.mazeMatrix = mazeMatrix;
-        this.start = start;
-        this.end = end;
     }
 
 }
