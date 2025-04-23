@@ -13,6 +13,8 @@ public class MyMazeGenerator extends AMazeGenerator {
      * @param rows is the number of rows in the maze
      * @param columns is the number of columns in the maze
      * @return Maze object created
+     * @throws IndexOutOfBoundsException if arguments rows and columns in func "setPosition" are invalid
+     * @throws IllegalArgumentException if arguments rows and columns in func "setPosition" are invalid
      */
     public Maze extractLogicalMaze(int[][] maze, int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException {
         Maze result = new Maze(rows,columns);
@@ -34,8 +36,8 @@ public class MyMazeGenerator extends AMazeGenerator {
      */
     @Override
     public Maze generate(int rows, int columns) {
-        if (rows <= 0 || columns <= 0){
-            throw new IllegalArgumentException("row and column have to be positive numbers bigger than 0");
+        if (rows <= 1 || columns <= 1){
+           return defaultMaze();
         }
 
         while(true) {

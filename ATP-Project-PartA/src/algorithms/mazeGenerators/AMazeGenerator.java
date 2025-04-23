@@ -2,6 +2,7 @@ package algorithms.mazeGenerators;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 
 public abstract class AMazeGenerator implements IMazeGenerator {
 
@@ -77,6 +78,8 @@ public abstract class AMazeGenerator implements IMazeGenerator {
      * @param maze is the current maze
      * @param start is the satrat position in the maze
      * @param goal is the end position in the maze
+     * @throws IndexOutOfBoundsException if arguments rows and columns in func "setPosition" are invalid
+     * @throws IllegalArgumentException if arguments rows and columns in func "setPosition" are invalid
      */
     public void makeRandomPath(Maze maze, Position start, Position goal) throws IndexOutOfBoundsException, IllegalArgumentException {
         int currentRow = start.getRowIndex();
@@ -111,5 +114,20 @@ public abstract class AMazeGenerator implements IMazeGenerator {
         }
     }
 
+    /**
+     * method to create a default maze in case of invalid input of rows or columns
+     *
+     * @return default maze in size 10*10 with only walls inside
+     */
+    public Maze defaultMaze(){
+        Maze MazeMatrix = new Maze(10, 10);
+
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                MazeMatrix.setPosition(i,j,1);
+            }
+        }
+        return MazeMatrix;
+    }
 
 }

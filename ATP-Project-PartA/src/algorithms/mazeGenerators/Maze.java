@@ -39,17 +39,36 @@ public class Maze {
         return this.columns;
     }
 
+    /**
+     * method to set a position in the maze as a specific number
+     *
+     * @param row row number in the maze
+     * @param column column number in the maze
+     * @param num new number to set in the position
+     * @throws IndexOutOfBoundsException if arguments rows and columns are invalid
+     * @throws IllegalArgumentException if arguments rows and columns are invalid
+     */
     public void setPosition(int row, int column, int num) throws IndexOutOfBoundsException, IllegalArgumentException {
         if (row >= rows || column >= columns){
             throw new IndexOutOfBoundsException("index out of range");
         }
         else if (row < 0 || column < 0){
             throw new IllegalArgumentException("row and column have to be positive numbers");
+        } else if (num != 1 && num != 0){
+            throw new IllegalArgumentException("maze contains values of 1 or 0");
         }
         this.mazeMatrix[row][column] = num;
     }
 
-    //return true if it is a valid move, else return false
+    /**
+     * method to check if the given input is a valid move
+     *
+     * @param row row number in the maze
+     * @param column column number in the maze
+     * @return true if it is a valid move, else return false
+     * @throws IndexOutOfBoundsException if arguments rows and columns are invalid
+     * @throws IllegalArgumentException if arguments rows and columns are invalid
+     */
     public boolean canPass(int row, int column) throws IndexOutOfBoundsException, IllegalArgumentException {
         if (row >= rows || column >= columns){
             throw new IndexOutOfBoundsException("index out of range");
@@ -63,7 +82,11 @@ public class Maze {
         return false;
     }
 
-    //calculates a random position in the maze walls
+    /**
+     * method to calculate a random position in the maze frame
+     *
+     * @return position object calculated
+     */
     public Position calcPosition(){
         Random rand = new Random();
         int row = rand.nextInt(rows);
@@ -77,14 +100,31 @@ public class Maze {
         return new Position(row, column);
     }
 
+
+    /**
+     * method to get the start position in the maze
+     *
+     * @return start position object
+     */
     public Position getStartPosition(){
         return this.start;
     }
 
+    /**
+     * method to get the goal position in the maze
+     *
+     * @return goal position object
+     */
     public Position getGoalPosition() {
         return this.end;
     }
 
+    /**
+     * method to print the maze
+     *
+     * @throws IndexOutOfBoundsException if arguments rows and columns in the func "canPass" are invalid
+     * @throws IllegalArgumentException if arguments rows and columns in the func "canPass" are invalid
+     */
     public void print() throws IndexOutOfBoundsException, IllegalArgumentException{
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.columns; j++) {
@@ -106,7 +146,14 @@ public class Maze {
         }
     }
 
-    //for tests only
+    /**
+     * method to set the maze with a given input
+     * this method used only for tests in this project
+     *
+     * @param mazeMatrix an input int matrix to set as the maze matrix
+     * @param start a position to set as start position
+     * @param end a position to set as goal position
+     */
     public void setMazeMatrix(int[][] mazeMatrix, Position start, Position end){
         this.mazeMatrix = mazeMatrix;
         this.start = start;
