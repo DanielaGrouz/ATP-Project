@@ -1,6 +1,7 @@
 package algorithms.mazeGenerators;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class MyMazeGenerator extends AMazeGenerator {
@@ -24,6 +25,8 @@ public class MyMazeGenerator extends AMazeGenerator {
                 result.setPosition(i, j, maze[2 * i + 1][2 * j + 1]);
             }
         }
+        result.setStartPosition(result.calcPosition());
+        result.setEndPosition(result.calcPosition());
         return result;
     }
 
@@ -57,6 +60,8 @@ public class MyMazeGenerator extends AMazeGenerator {
             Random rand = new Random();
             int startRow = 2 * rand.nextInt(rows) + 1;
             int startCol = 2 * rand.nextInt(columns) + 1;
+//            int startRow = 1;
+//            int startCol = 1;
             wallMaze[startRow][startCol] = 0;  //starting point
 
             //Add surrounding walls to the wall list
@@ -68,7 +73,7 @@ public class MyMazeGenerator extends AMazeGenerator {
                 Position wall = wallList.remove(rand.nextInt(wallList.size()));
 
                 int[][] directions = {
-                        {-2, 0}, {2, 0}, {0, -2}, {0, 2}
+                        {-2,0}, {2,0}, {0,-2}, {0,2}
                 };
 
                 for (int[] dir : directions) {
@@ -97,29 +102,18 @@ public class MyMazeGenerator extends AMazeGenerator {
                     }
                 }
             }
-
-            Maze maze = extractLogicalMaze(wallMaze, rows, columns);
-            // check if the maze has a path
-            if (hasPath(maze)) {
-                return maze;
-            } else {
-                // makes a random path in the maze
-                makeRandomPath(maze, maze.getStartPosition(), maze.getGoalPosition());
-                // check if the maze has a path
-                if (hasPath(maze)) {
-                    return maze;
-                }
-            }
+            return extractLogicalMaze(wallMaze, rows, columns);
         }
     }
+
     /**
      * helper func to method generate
      * method to check if the row and column in bounds of the WallMaze
      *
-     * @param row is the row number to check
+     * @param row    is the row number to check
      * @param column is the column number to check
      * @param height is the height of the wall maze
-     * @param width is the width of the wall maze
+     * @param width  is the width of the wall maze
      * @return Maze object created
      */
     boolean isInBounds(int row, int column, int height, int width) {
@@ -131,8 +125,8 @@ public class MyMazeGenerator extends AMazeGenerator {
      * helper func to method generate
      * method to add surrounding walls to wall list
      *
-     * @param row  is the row number to add
-     * @param col  is the column number to add
+     * @param row      is the row number to add
+     * @param col      is the column number to add
      * @param wallList id the list of walls
      * @param height   is the height of the wall maze
      * @param width    is the width of the wall maze
@@ -160,6 +154,8 @@ public class MyMazeGenerator extends AMazeGenerator {
     }
 
 }
+
+
 
 
 

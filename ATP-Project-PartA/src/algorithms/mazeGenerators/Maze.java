@@ -24,8 +24,8 @@ public class Maze {
         this.mazeMatrix = new int[rows][columns];
         this.rows = rows;
         this.columns = columns;
-        this.start = calcPosition();
-        this.end = calcPosition();
+//        this.start = calcPosition();
+//        this.end = calcPosition();
     }
 
     /**
@@ -103,7 +103,6 @@ public class Maze {
             row = rand.nextInt(rows);
             column = rand.nextInt(columns);
         }
-
         return new Position(row, column);
     }
 
@@ -133,24 +132,23 @@ public class Maze {
      * @throws IllegalArgumentException if arguments rows and columns in the func "canPass" are invalid
      */
     public void print() throws IndexOutOfBoundsException, IllegalArgumentException{
-        for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < this.columns; j++) {
-                if (i == this.getStartPosition().getRowIndex() && j == this.getStartPosition().getColumnIndex()) {
-                    System.out.print("S ");
+        if(this.getGoalPosition() != null && this.getStartPosition() != null) {
+            for (int i = 0; i < this.rows; i++) {
+                for (int j = 0; j < this.columns; j++) {
+                    if (i == this.getStartPosition().getRowIndex() && j == this.getStartPosition().getColumnIndex()) {
+                        System.out.print("S ");
+                    } else if (i == this.getGoalPosition().getRowIndex() && j == this.getGoalPosition().getColumnIndex()) {
+                        System.out.print("E ");
+                    } else if (this.canPass(i, j)) {
+                        System.out.print("0 ");
+                    } else {
+                        System.out.print("1 ");
+                    }
                 }
-                else if (i == this.getGoalPosition().getRowIndex() && j == this.getGoalPosition().getColumnIndex()) {
-                    System.out.print("E ");
-                }
-                else if (this.canPass(i,j)) {
-                    System.out.print("0 ");
-                }
-
-                else {
-                    System.out.print("1 ");
-                }
+                System.out.println();
             }
-            System.out.println();
         }
+
     }
 
     /**
@@ -167,5 +165,14 @@ public class Maze {
         this.start = start;
         this.end = end;
     }
+
+    public void setStartPosition (Position position){
+        start = position;
+    }
+
+    public void setEndPosition (Position position){
+        end = position;
+    }
+
 
 }
