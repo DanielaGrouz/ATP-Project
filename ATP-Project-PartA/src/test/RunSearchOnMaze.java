@@ -5,8 +5,6 @@ import algorithms.search.*;
 
 import java.util.ArrayList;
 
-//import static jdk.internal.org.jline.utils.Colors.s;
-
 public class RunSearchOnMaze {
     public static void main(String[] args) {
         IMazeGenerator mg = new MyMazeGenerator();
