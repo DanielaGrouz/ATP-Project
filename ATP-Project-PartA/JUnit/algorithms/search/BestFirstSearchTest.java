@@ -68,7 +68,7 @@ class BestFirstSearchTest {
     void testLargeMaze() {
         BestFirstSearch bestFirstSearch = new BestFirstSearch();
         //initialize large maze
-        Maze maze = new SimpleMazeGenerator().generate(100, 100);
+        Maze maze = new SimpleMazeGenerator().generate(1000, 1000);
         //solve the maze
         SearchableMaze searchableMaze = new SearchableMaze(maze);
         Solution solution = bestFirstSearch.solve(searchableMaze);
