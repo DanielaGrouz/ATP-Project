@@ -47,4 +47,18 @@ public class Position {
         return "{" + column + "," + row + "}";
     }
 
+
+    @Override
+    public boolean equals(Object o){
+        if(this==o) return true;
+        if(!(o instanceof Position)) return false;
+        Position p=(Position)o;
+        return row==p.row && column==p.column;
+    }
+
+    /* ABSOLUTELY REQUIRED for ArrayList.contains to work fast enough */
+    @Override public int hashCode(){
+        return 31*row + column;
+    }
+
 }

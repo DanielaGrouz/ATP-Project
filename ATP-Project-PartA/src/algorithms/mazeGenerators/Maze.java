@@ -13,19 +13,19 @@ public class Maze {
     /**
      * constructor to Maze class - creates a maze object
      *
-     * @param rows of the maze
+     * @param rows    of the maze
      * @param columns of the maze
      * @throws IllegalArgumentException if the number of rows or columns is negative or zero
      */
     public Maze(int rows, int columns) throws IllegalArgumentException {
-        if(rows <= 0 || columns <= 0){
+        if (rows <= 0 || columns <= 0) {
             throw new IllegalArgumentException("rows and columns have to be positive numbers");
         }
         this.mazeMatrix = new int[rows][columns];
         this.rows = rows;
         this.columns = columns;
-//        this.start = calcPosition();
-//        this.end = calcPosition();
+        this.start = calcPosition();
+        this.end = calcPosition();
     }
 
     /**
@@ -33,7 +33,7 @@ public class Maze {
      *
      * @return int that represents the number of rows
      */
-    public int getRows(){
+    public int getRows() {
         return this.rows;
     }
 
@@ -42,29 +42,29 @@ public class Maze {
      *
      * @return int that represents the number of columns
      */
-    public int getColumns(){
+    public int getColumns() {
         return this.columns;
     }
 
     /**
      * method to set a position in the maze as a specific number
      *
-     * @param row row number in the maze
+     * @param row    row number in the maze
      * @param column column number in the maze
-     * @param num new number to set in the position
+     * @param num    new number to set in the position
      * @throws IndexOutOfBoundsException if arguments rows and columns are invalid
-     * @throws IllegalArgumentException if arguments rows and columns are invalid
+     * @throws IllegalArgumentException  if arguments rows and columns are invalid
      */
     public void setPosition(int row, int column, int num) throws IndexOutOfBoundsException, IllegalArgumentException {
-        if (row >= rows || column >= columns){
+        if (row >= rows || column >= columns) {
             throw new IndexOutOfBoundsException("index out of range");
-        }
-        else if (row < 0 || column < 0){
+        } else if (row < 0 || column < 0) {
             throw new IllegalArgumentException("row and column have to be positive numbers");
-        } else if (num != 1 && num != 0){
+        }
+        else if(num !=1&&num !=0){
             throw new IllegalArgumentException("maze contains values of 1 or 0");
         }
-        this.mazeMatrix[row][column] = num;
+        this.mazeMatrix[row][column]=num;
     }
 
     /**
@@ -96,12 +96,12 @@ public class Maze {
      */
     public Position calcPosition(){
         Random rand = new Random();
-        int row = rand.nextInt(rows);
-        int column = rand.nextInt(columns);
+        int row = rand.nextInt(rows-1);
+        int column = rand.nextInt(columns-1);
         while (this.mazeMatrix[row][column] == 1 || (row != 0 && column != 0) ||
                 (start != null && start.getRowIndex() == row && start.getColumnIndex() == column)) {
-            row = rand.nextInt(rows);
-            column = rand.nextInt(columns);
+            row = rand.nextInt(rows-1);
+            column = rand.nextInt(columns-1);
         }
         return new Position(row, column);
     }
@@ -132,23 +132,20 @@ public class Maze {
      * @throws IllegalArgumentException if arguments rows and columns in the func "canPass" are invalid
      */
     public void print() throws IndexOutOfBoundsException, IllegalArgumentException{
-        if(this.getGoalPosition() != null && this.getStartPosition() != null) {
-            for (int i = 0; i < this.rows; i++) {
-                for (int j = 0; j < this.columns; j++) {
-                    if (i == this.getStartPosition().getRowIndex() && j == this.getStartPosition().getColumnIndex()) {
-                        System.out.print("S ");
-                    } else if (i == this.getGoalPosition().getRowIndex() && j == this.getGoalPosition().getColumnIndex()) {
-                        System.out.print("E ");
-                    } else if (this.canPass(i, j)) {
-                        System.out.print("0 ");
-                    } else {
-                        System.out.print("1 ");
-                    }
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.columns; j++) {
+                if (i == this.getStartPosition().getRowIndex() && j == this.getStartPosition().getColumnIndex()) {
+                    System.out.print("S ");
+                } else if (i == this.getGoalPosition().getRowIndex() && j == this.getGoalPosition().getColumnIndex()) {
+                    System.out.print("E ");
+                } else if (this.canPass(i, j)) {
+                    System.out.print("0 ");
+                } else {
+                    System.out.print("1 ");
                 }
-                System.out.println();
             }
+            System.out.println();
         }
-
     }
 
     /**
@@ -166,13 +163,12 @@ public class Maze {
         this.end = end;
     }
 
-    public void setStartPosition (Position position){
-        start = position;
+    /**
+     * method to get the maze matrix
+     *
+     * @return int[][] array of numbers 0 or 1 represents the maze matrix
+     */
+    public int[][] getMazeMatrix (){
+        return mazeMatrix;
     }
-
-    public void setEndPosition (Position position){
-        end = position;
-    }
-
-
 }

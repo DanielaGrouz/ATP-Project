@@ -1,35 +1,9 @@
 package algorithms.mazeGenerators;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class MyMazeGenerator extends AMazeGenerator {
-
-    /**
-     * helper func to method generate
-     * method to extract a logical maze from the generate maze func
-     *
-     * @param maze    an empty array to contain the new logical maze
-     * @param rows    is the number of rows in the maze
-     * @param columns is the number of columns in the maze
-     * @return Maze object created
-     * @throws IndexOutOfBoundsException if arguments rows and columns in func "setPosition" are invalid
-     * @throws IllegalArgumentException  if arguments rows and columns in func "setPosition" are invalid
-     */
-    private Maze extractLogicalMaze(int[][] maze, int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException {
-        Maze result = new Maze(rows, columns);
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                result.setPosition(i, j, maze[2 * i + 1][2 * j + 1]);
-            }
-        }
-        result.setStartPosition(result.calcPosition());
-        result.setEndPosition(result.calcPosition());
-        return result;
-    }
-
 
     /**
      * method to generate a maze
@@ -44,67 +18,43 @@ public class MyMazeGenerator extends AMazeGenerator {
             return defaultMaze();
         }
 
-        while (true) {
-            int height = 2 * rows + 1;
-            int width = 2 * columns + 1;
-            int[][] wallMaze = new int[height][width];
+        Maze wallMaze = new Maze(rows, columns);
 
-            //initialize all cells as walls - value : 1
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    wallMaze[i][j] = 1;
-                }
+        //initialize all cells as walls - value : 1
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                wallMaze.getMazeMatrix()[i][j] = 1;
             }
-
-            //pick a random starting cell
-            Random rand = new Random();
-            int startRow = 2 * rand.nextInt(rows) + 1;
-            int startCol = 2 * rand.nextInt(columns) + 1;
-//            int startRow = 1;
-//            int startCol = 1;
-            wallMaze[startRow][startCol] = 0;  //starting point
-
-            //Add surrounding walls to the wall list
-            ArrayList<Position> wallList = new ArrayList<>();
-            addNeighboringWalls(startRow, startCol, wallList, height, width, wallMaze);
-
-            while (!wallList.isEmpty()) {
-                //pick a random wall and remove it from the wall list
-                Position wall = wallList.remove(rand.nextInt(wallList.size()));
-
-                int[][] directions = {
-                        {-2,0}, {2,0}, {0,-2}, {0,2}
-                };
-
-                for (int[] dir : directions) {
-                    int cell1Row = wall.getRowIndex() + dir[0];
-                    int cell1Col = wall.getColumnIndex() + dir[1];
-                    int cell2Row = wall.getRowIndex() - dir[0];
-                    int cell2Col = wall.getColumnIndex() - dir[1];
-
-                    if (isInBounds(cell1Row, cell1Col, height, width) &&
-                            isInBounds(cell2Row, cell2Col, height, width)) {
-
-                        //connect the wall only if it separates two unvisited areas (one side has path, other side has wall)
-                        if (wallMaze[cell1Row][cell1Col] == 1 && wallMaze[cell2Row][cell2Col] == 1) {
-                            wallMaze[wall.getRowIndex()][wall.getColumnIndex()] = 0;  //break the wall
-
-                            //make one of the cells a path
-                            if (wallMaze[cell1Row][cell1Col] == 1) {
-                                wallMaze[cell1Row][cell1Col] = 0;
-                                addNeighboringWalls(cell1Row, cell1Col, wallList, height, width, wallMaze);
-                            } else {
-                                wallMaze[cell2Row][cell2Col] = 0;
-                                addNeighboringWalls(cell2Row, cell2Col, wallList, height, width, wallMaze);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-            return extractLogicalMaze(wallMaze, rows, columns);
         }
+
+        int startRow = wallMaze.getStartPosition().getRowIndex();
+        int startCol = wallMaze.getStartPosition().getColumnIndex();
+        wallMaze.getMazeMatrix()[startRow][startCol] = 0;  //starting point
+
+        //Add surrounding walls to the wall list
+        ArrayList<Position> wallList = new ArrayList<>();
+        addNeighboringWalls(startRow, startCol, wallList, wallMaze, rows, columns);
+
+        Position goal = wallMaze.getGoalPosition();
+        while (!wallList.isEmpty() || wallMaze.getMazeMatrix()[goal.getRowIndex()][goal.getColumnIndex()] == 1) {
+
+            if (wallList.isEmpty()) {
+                //connect the goal point to the path
+                makePath(wallMaze, goal);
+                return wallMaze;
+            }
+
+            //pick a random wall and remove it from the wall list
+            Random rand = new Random();
+            Position wall = wallList.remove(rand.nextInt(wallList.size()));
+            if (countPathNeighbors(wallMaze, wall) == 1) {
+                wallMaze.getMazeMatrix()[wall.getRowIndex()][wall.getColumnIndex()] = 0;
+                addNeighboringWalls(wall.getRowIndex(), wall.getColumnIndex(), wallList, wallMaze, rows, columns);
+            }
+        }
+        return wallMaze;
     }
+
 
     /**
      * helper func to method generate
@@ -117,9 +67,8 @@ public class MyMazeGenerator extends AMazeGenerator {
      * @return Maze object created
      */
     boolean isInBounds(int row, int column, int height, int width) {
-        return row > 0 && row < height - 1 && column > 0 && column < width - 1;
+        return row >= 0 && row < height && column >= 0 && column < width;
     }
-
 
     /**
      * helper func to method generate
@@ -128,34 +77,74 @@ public class MyMazeGenerator extends AMazeGenerator {
      * @param row      is the row number to add
      * @param col      is the column number to add
      * @param wallList id the list of walls
-     * @param height   is the height of the wall maze
-     * @param width    is the width of the wall maze
-     * @return Maze object created
      */
-    private void addNeighboringWalls(int row, int col, ArrayList<Position> wallList, int height, int width, int[][] wallMaze) {
+
+    private void addNeighboringWalls(int row, int col, ArrayList<Position> wallList, Maze wallMaze, int height, int width) {
         int[][] directions = {
-                {-2, 0}, // up
-                {2, 0},  // down
-                {0, -2}, // left
-                {0, 2}   // right
+                {-1, 0}, // up
+                {1, 0},  // down
+                {0, -1}, // left
+                {0, 1}   // right
         };
 
         for (int[] dir : directions) {
             int newRow = row + dir[0];
             int newCol = col + dir[1];
 
-            if (isInBounds(newRow, newCol, height, width) && wallMaze[newRow][newCol] == 1) {
-                //the wall is between the current cell and the next cell
-                int wallRow = row + dir[0] / 2;
-                int wallCol = col + dir[1] / 2;
-                wallList.add(new Position(wallRow, wallCol));
+            if (isInBounds(newRow, newCol,height,width)) {
+                wallList.add(new Position(newRow, newCol));
             }
         }
     }
 
+    /**
+     * helper func to method generate
+     * method to count the surrounding paths to a specific position
+     *
+     * @param wallMaze is the maze object
+     * @param position is the relevant position to check
+     * @return int that represents the number of neighbors valued 0 to the given position
+     */
+    private int countPathNeighbors(Maze wallMaze, Position position){
+        int count = 0;
+        ArrayList<Position> pathNeighbors = new ArrayList<>();
+        addNeighboringWalls(position.getRowIndex(), position.getColumnIndex(), pathNeighbors, wallMaze, wallMaze.getRows(), wallMaze.getColumns());
+        for (Position neighbor : pathNeighbors) {
+            if (wallMaze.getMazeMatrix()[neighbor.getRowIndex()][neighbor.getColumnIndex()] == 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * helper func to method generate
+     * method to ensure that there is a valid path to the goal position
+     *
+     * @param wallMaze is the maze object
+     * @param goal is the goal position
+     */
+    private void makePath(Maze wallMaze, Position goal) {
+        int row = goal.getRowIndex();
+        int column = goal.getColumnIndex();
+        ArrayList<Position> neighbors = new ArrayList<>();
+        addNeighboringWalls(row, column, neighbors, wallMaze, wallMaze.getRows(), wallMaze.getColumns());
+        Position firstNeighbor = null;
+        for (Position neighbor : neighbors){
+            int r = neighbor.getRowIndex();
+            int c = neighbor.getColumnIndex();
+            if (wallMaze.getMazeMatrix()[r][c] == 0){
+                wallMaze.getMazeMatrix()[row][column] = 0;
+                return;
+            }
+            if (firstNeighbor == null){
+                firstNeighbor = neighbor;
+            }
+        }
+        if(firstNeighbor != null){
+            wallMaze.getMazeMatrix()[firstNeighbor.getRowIndex()][firstNeighbor.getColumnIndex()] = 0;
+        }
+        wallMaze.getMazeMatrix()[row][column] = 0;
+    }
+
 }
-
-
-
-
-
