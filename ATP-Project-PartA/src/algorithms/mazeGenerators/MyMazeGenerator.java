@@ -131,6 +131,7 @@ public class MyMazeGenerator extends AMazeGenerator {
         ArrayList<Position> neighbors = new ArrayList<>();
         addNeighboringWalls(gRow, gCol, neighbors, maze.getRows(), maze.getColumns());
 
+        //neighbor cells that equals to o
         ArrayList<Position> openNeighbors = new ArrayList<>();
         for (Position p : neighbors) {
             if (maze.getMazeMatrix()[p.getRowIndex()][p.getColumnIndex()] == 0) {
@@ -138,7 +139,9 @@ public class MyMazeGenerator extends AMazeGenerator {
             }
         }
 
+        //if there are no neighbor cells that equals to o
         if (openNeighbors.isEmpty()) {
+            //update rand cell from neighbors to be a valid path - 0
             Position toOpen = neighbors.get(new Random().nextInt(neighbors.size()));
             maze.getMazeMatrix()[toOpen.getRowIndex()][toOpen.getColumnIndex()] = 0;
         }

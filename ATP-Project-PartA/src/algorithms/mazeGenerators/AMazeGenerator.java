@@ -84,7 +84,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
         int currentRow = start.getRowIndex();
         int currentCol = start.getColumnIndex();
 
-        // Continue until we reach the goal position
+        //continue until we reach the goal position
         while (currentRow != goal.getRowIndex() || currentCol != goal.getColumnIndex()) {
             ArrayList<int[]> possibleMoves = new ArrayList<>();
 
@@ -101,7 +101,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
                 int newRow = currentRow + move[0];
                 int newCol = currentCol + move[1];
 
-                // If the new position is valid and inside maze bounds
+                //if the new position is valid and inside maze bounds
                 if (newRow >= 0 && newRow < maze.getRows() && newCol >= 0 && newCol < maze.getColumns()) {
                     // Move to the new position
                     currentRow = newRow;
