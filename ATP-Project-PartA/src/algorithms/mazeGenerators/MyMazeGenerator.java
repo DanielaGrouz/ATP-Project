@@ -23,13 +23,13 @@ public class MyMazeGenerator extends AMazeGenerator {
         //initialize all cells as walls - value : 1
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                wallMaze.getMazeMatrix()[i][j] = 1;
+                wallMaze.setPosition(i,j, 1);
             }
         }
 
         int startRow = wallMaze.getStartPosition().getRowIndex();
         int startCol = wallMaze.getStartPosition().getColumnIndex();
-        wallMaze.getMazeMatrix()[startRow][startCol] = 0;  //starting point
+        wallMaze.setPosition(startRow,startCol,0);  //starting point
 
         //Add surrounding walls to the wall list
         ArrayList<Position> wallList = new ArrayList<>();
@@ -48,7 +48,7 @@ public class MyMazeGenerator extends AMazeGenerator {
             Random rand = new Random();
             Position wall = wallList.remove(rand.nextInt(wallList.size()));
             if (countPathNeighbors(wallMaze, wall) == 1) {
-                wallMaze.getMazeMatrix()[wall.getRowIndex()][wall.getColumnIndex()] = 0;
+                wallMaze.setPosition(wall.getRowIndex(),wall.getColumnIndex(), 0);
                 addNeighboringWalls(wall.getRowIndex(), wall.getColumnIndex(), wallList, rows, columns);
             }
         }
@@ -143,9 +143,9 @@ public class MyMazeGenerator extends AMazeGenerator {
         if (openNeighbors.isEmpty()) {
             //update rand cell from neighbors to be a valid path - 0
             Position toOpen = neighbors.get(new Random().nextInt(neighbors.size()));
-            maze.getMazeMatrix()[toOpen.getRowIndex()][toOpen.getColumnIndex()] = 0;
+            maze.setPosition(toOpen.getRowIndex(),toOpen.getColumnIndex(),0);
         }
-        maze.getMazeMatrix()[gRow][gCol] = 0;
+        maze.setPosition(gRow,gCol,0);
     }
 
 

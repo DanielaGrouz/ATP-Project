@@ -171,4 +171,5 @@ public class Maze {
     public int[][] getMazeMatrix (){
         return mazeMatrix;
     }
+
 }

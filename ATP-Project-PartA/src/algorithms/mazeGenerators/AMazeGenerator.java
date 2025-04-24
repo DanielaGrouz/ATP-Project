@@ -36,7 +36,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
      * @throws IndexOutOfBoundsException if arguments rows and columns in func "canPass" are invalid
      * @throws IllegalArgumentException if arguments rows and columns in func "canPass" are invalid
      */
-    public boolean hasPath(Maze maze) throws IndexOutOfBoundsException, IllegalArgumentException {
+    protected boolean hasPath(Maze maze) throws IndexOutOfBoundsException, IllegalArgumentException {
         int rows = maze.getRows();
         int columns = maze.getColumns();
 
@@ -80,7 +80,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
      * @throws IndexOutOfBoundsException if arguments rows and columns in func "setPosition" are invalid
      * @throws IllegalArgumentException if arguments rows and columns in func "setPosition" are invalid
      */
-    public void makeRandomPath(Maze maze, Position start, Position goal) throws IndexOutOfBoundsException, IllegalArgumentException {
+    protected void makeRandomPath(Maze maze, Position start, Position goal) throws IndexOutOfBoundsException, IllegalArgumentException {
         int currentRow = start.getRowIndex();
         int currentCol = start.getColumnIndex();
 
@@ -118,7 +118,7 @@ public abstract class AMazeGenerator implements IMazeGenerator {
      *
      * @return default maze in size 10*10 with only walls inside
      */
-    public Maze defaultMaze(){
+    protected Maze defaultMaze(){
         Maze MazeMatrix = new Maze(10, 10);
 
         for (int i = 0; i < 10; i++) {

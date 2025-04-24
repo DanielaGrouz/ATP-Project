@@ -12,7 +12,7 @@ public class SimpleMazeGenerator extends AMazeGenerator{
      * @throws IndexOutOfBoundsException if arguments rows and columns in func "setPosition" are invalid
      * @throws IllegalArgumentException if arguments rows and columns in func "setPosition" are invalid
      */
-    public void randomPath(Maze MazeMatrix, int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException {
+    private void randomPath(Maze MazeMatrix, int rows, int columns) throws IndexOutOfBoundsException, IllegalArgumentException {
         Random rand = new Random();
         for (int i = 1; i < rows - 1; i++) {
             for (int j = 1; j < columns - 1; j++) {
