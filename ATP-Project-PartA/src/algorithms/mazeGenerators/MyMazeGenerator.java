@@ -33,13 +33,12 @@ public class MyMazeGenerator extends AMazeGenerator {
 
         //Add surrounding walls to the wall list
         ArrayList<Position> wallList = new ArrayList<>();
-        addNeighboringWalls(startRow, startCol, wallList, wallMaze, rows, columns);
+        addNeighboringWalls(startRow, startCol, wallList, rows, columns);
 
         Position goal = wallMaze.getGoalPosition();
         while (!wallList.isEmpty() || wallMaze.getMazeMatrix()[goal.getRowIndex()][goal.getColumnIndex()] == 1) {
 
             if (wallList.isEmpty()) {
-                //connect the goal point to the path
                 makePath(wallMaze, goal);
                 return wallMaze;
             }
@@ -49,7 +48,7 @@ public class MyMazeGenerator extends AMazeGenerator {
             Position wall = wallList.remove(rand.nextInt(wallList.size()));
             if (countPathNeighbors(wallMaze, wall) == 1) {
                 wallMaze.getMazeMatrix()[wall.getRowIndex()][wall.getColumnIndex()] = 0;
-                addNeighboringWalls(wall.getRowIndex(), wall.getColumnIndex(), wallList, wallMaze, rows, columns);
+                addNeighboringWalls(wall.getRowIndex(), wall.getColumnIndex(), wallList, rows, columns);
             }
         }
         return wallMaze;
@@ -79,7 +78,7 @@ public class MyMazeGenerator extends AMazeGenerator {
      * @param wallList id the list of walls
      */
 
-    private void addNeighboringWalls(int row, int col, ArrayList<Position> wallList, Maze wallMaze, int height, int width) {
+    private void addNeighboringWalls(int row, int col, ArrayList<Position> wallList, int height, int width) {
         int[][] directions = {
                 {-1, 0}, // up
                 {1, 0},  // down
@@ -108,7 +107,7 @@ public class MyMazeGenerator extends AMazeGenerator {
     private int countPathNeighbors(Maze wallMaze, Position position){
         int count = 0;
         ArrayList<Position> pathNeighbors = new ArrayList<>();
-        addNeighboringWalls(position.getRowIndex(), position.getColumnIndex(), pathNeighbors, wallMaze, wallMaze.getRows(), wallMaze.getColumns());
+        addNeighboringWalls(position.getRowIndex(), position.getColumnIndex(), pathNeighbors, wallMaze.getRows(), wallMaze.getColumns());
         for (Position neighbor : pathNeighbors) {
             if (wallMaze.getMazeMatrix()[neighbor.getRowIndex()][neighbor.getColumnIndex()] == 0) {
                 count++;
@@ -124,27 +123,62 @@ public class MyMazeGenerator extends AMazeGenerator {
      * @param wallMaze is the maze object
      * @param goal is the goal position
      */
-    private void makePath(Maze wallMaze, Position goal) {
-        int row = goal.getRowIndex();
-        int column = goal.getColumnIndex();
+//    private void makePath(Maze wallMaze, Position goal) {
+//        int row = goal.getRowIndex();
+//        int column = goal.getColumnIndex();
+//        ArrayList<Position> neighbors = new ArrayList<>();
+//        addNeighboringWalls(row, column, neighbors, wallMaze.getRows(), wallMaze.getColumns());
+//        Position firstNeighbor = null;
+//        for (Position neighbor : neighbors){
+//            int r = neighbor.getRowIndex();
+//            int c = neighbor.getColumnIndex();
+//            if (wallMaze.getMazeMatrix()[r][c] == 0){
+//                wallMaze.getMazeMatrix()[row][column] = 0;
+//                return;
+//            }
+//            if (firstNeighbor == null){
+//                firstNeighbor = neighbor;
+//            }
+//        }
+//        if(firstNeighbor != null){
+//            wallMaze.getMazeMatrix()[firstNeighbor.getRowIndex()][firstNeighbor.getColumnIndex()] = 0;
+//        }
+//        wallMaze.getMazeMatrix()[row][column] = 0;
+//    }
+
+    /**
+     * Guarantees that the goal cell is connected to the maze by
+     * either linking to an existing open neighbor or digging through one wall.
+     *
+     * @param maze  the maze to modify
+     * @param goal  the destination cell that must be reachable
+     */
+    private void makePath(Maze maze, Position goal) {
+        int gRow = goal.getRowIndex();
+        int gCol = goal.getColumnIndex();
+
+        // Collect all valid neighbors around the goal
         ArrayList<Position> neighbors = new ArrayList<>();
-        addNeighboringWalls(row, column, neighbors, wallMaze, wallMaze.getRows(), wallMaze.getColumns());
-        Position firstNeighbor = null;
-        for (Position neighbor : neighbors){
-            int r = neighbor.getRowIndex();
-            int c = neighbor.getColumnIndex();
-            if (wallMaze.getMazeMatrix()[r][c] == 0){
-                wallMaze.getMazeMatrix()[row][column] = 0;
-                return;
-            }
-            if (firstNeighbor == null){
-                firstNeighbor = neighbor;
+        addNeighboringWalls(gRow, gCol, neighbors,
+                maze.getRows(), maze.getColumns());
+
+        /* ---------- Phase 1: search for *any* open neighbor ---------- */
+        ArrayList<Position> openNeighbors = new ArrayList<>();
+        for (Position p : neighbors) {
+            if (maze.getMazeMatrix()[p.getRowIndex()][p.getColumnIndex()] == 0) {
+                openNeighbors.add(p);
             }
         }
-        if(firstNeighbor != null){
-            wallMaze.getMazeMatrix()[firstNeighbor.getRowIndex()][firstNeighbor.getColumnIndex()] = 0;
+
+        /* ---------- Phase 2: ensure connectivity ---------- */
+        if (openNeighbors.isEmpty()) {
+            // No open neighbor exists → choose one wall neighbor at random and open it
+            Position toOpen = neighbors.get(new Random().nextInt(neighbors.size()));
+            maze.getMazeMatrix()[toOpen.getRowIndex()][toOpen.getColumnIndex()] = 0;
         }
-        wallMaze.getMazeMatrix()[row][column] = 0;
+        // Whether we opened a wall or not, mark the goal cell itself as open
+        maze.getMazeMatrix()[gRow][gCol] = 0;
     }
+
 
 }
