@@ -32,3 +32,6 @@ bin/
 
 # artifacts
 *.html
+constant-values.html
+help-doc.html
+index.html
