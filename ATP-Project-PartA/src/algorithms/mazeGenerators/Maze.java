@@ -96,12 +96,12 @@ public class Maze {
      */
     public Position calcPosition(){
         Random rand = new Random();
-        int row = rand.nextInt(rows-1);
-        int column = rand.nextInt(columns-1);
+        int row = rand.nextInt(rows);
+        int column = rand.nextInt(columns);
         while (this.mazeMatrix[row][column] == 1 || (row != 0 && column != 0) ||
                 (start != null && start.getRowIndex() == row && start.getColumnIndex() == column)) {
-            row = rand.nextInt(rows-1);
-            column = rand.nextInt(columns-1);
+            row = rand.nextInt(rows);
+            column = rand.nextInt(columns);
         }
         return new Position(row, column);
     }
