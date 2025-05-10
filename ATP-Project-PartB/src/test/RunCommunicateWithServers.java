@@ -1,9 +1,11 @@
 package test;
 
 import Client.IClientStrategy;
+import Client.Client;
 import IO.MyDecompressorInputStream;
 import Server.ServerStrategyGenerateMaze;
 import Server.ServerStrategySolveSearchProblem;
+import Server.Server;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
 import algorithms.search.AState;

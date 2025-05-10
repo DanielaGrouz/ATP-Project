@@ -1,5 +1,6 @@
 package algorithms.mazeGenerators;
 
+import java.nio.ByteBuffer;
 import java.util.Random;
 
 public class Maze {
@@ -26,6 +27,21 @@ public class Maze {
         this.columns = columns;
         this.start = calcPosition();
         this.end = calcPosition();
+    }
+
+    public Maze(byte[] array){
+        ByteBuffer buffer = ByteBuffer.wrap(array);
+
+        this.start = new Position(buffer.getInt(), buffer.getInt());
+        this.end = new Position(buffer.getInt(), buffer.getInt());
+        this.rows = buffer.getInt();
+        this.columns = (array.length - 4 * 5) / this.rows;
+        this.mazeMatrix = new int[rows][columns];
+        for (int i=0;i< rows; i++){
+            for(int j=0;j<columns;j++){
+                mazeMatrix[i][j] = buffer.get();
+            }
+        }
     }
 
     /**
@@ -170,6 +186,25 @@ public class Maze {
      */
     public int[][] getMazeMatrix (){
         return mazeMatrix;
+    }
+
+    public byte[] toByteArray(){
+        // the format is [start_row,start_column, end_row,end_column, rows, ...matrix in one array(flatten)]
+        // columns can be computed from array length
+        ByteBuffer buffer = ByteBuffer.allocate(4*5 + rows * columns);
+        buffer.putInt(start.getRowIndex());
+        buffer.putInt(start.getColumnIndex());
+
+        buffer.putInt(end.getRowIndex());
+        buffer.putInt(end.getColumnIndex());
+
+        buffer.putInt(rows);
+        for (int i = 0;i<rows; i++){
+            for (int j=0;j < columns; j ++){
+                buffer.put((byte) (mazeMatrix[i][j])); // value is always 0 or 1
+            }
+        };
+        return buffer.array();
     }
 
 }
