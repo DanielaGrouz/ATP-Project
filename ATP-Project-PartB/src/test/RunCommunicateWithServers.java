@@ -25,10 +25,10 @@ public class RunCommunicateWithServers {
 
         //Starting servers
         solveSearchProblemServer.start();
-//        mazeGeneratingServer.start();
+        mazeGeneratingServer.start();
 
         //Communicating with servers
-//        CommunicateWithServer_MazeGenerating();
+        CommunicateWithServer_MazeGenerating();
         CommunicateWithServer_SolveSearchProblem();
 
         //Stopping all servers
@@ -42,15 +42,14 @@ public class RunCommunicateWithServers {
                 @Override
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
-                        System.out.println("start");
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
-                        System.out.println("Sending maze dimensions...");
+                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+                        toServer.flush();
                         int[] mazeDimensions = new int[]{50, 50};
                         toServer.writeObject(mazeDimensions); //send mazedimensions to server
-                        System.out.println("Sending maze dimensions 2...");
                         toServer.flush();
-                        System.out.println("Done sending.");
-                        InputStream is = new SimpleDecompressorInputStream(inFromServer);
+                        byte[] compressedMaze = (byte[]) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
+                        InputStream is = new SimpleDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
                         byte[] decompressedMaze = new byte[1000 /*CHANGE SIZE ACCORDING TO YOU MAZE SIZE*/]; //allocating byte[] for the decompressed maze -
                         is.read(decompressedMaze); //Fill decompressedMaze with bytes
                         Maze maze = new Maze(decompressedMaze);
@@ -73,12 +72,13 @@ public class RunCommunicateWithServers {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
+                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+                        toServer.flush();
                         MyMazeGenerator mg = new MyMazeGenerator();
                         Maze maze = mg.generate(50, 50);
                         maze.print();
                         toServer.writeObject(maze); //send maze to server
                         toServer.flush();
-                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         Solution mazeSolution = (Solution) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
                         //Print Maze Solution retrieved from the server
                         System.out.println(String.format("Solution steps:%s", mazeSolution));

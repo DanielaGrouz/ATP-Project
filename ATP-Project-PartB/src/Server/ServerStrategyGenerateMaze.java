@@ -11,9 +11,8 @@ public class ServerStrategyGenerateMaze implements IServerStrategy{
     public void applyStrategy(InputStream inFromClient, OutputStream outToClient) throws IOException {
         System.out.println("got new request");
         ObjectInputStream fromClient = new ObjectInputStream(inFromClient);
-        SimpleCompressorOutputStream toClient = new SimpleCompressorOutputStream(outToClient);
+        ObjectOutputStream toClient = new ObjectOutputStream(outToClient);
         try{
-            System.out.println("Waiting for object...");
             int[] mazeDimensions = (int[]) fromClient.readObject();
             System.out.println("Received dimensions");
             MyMazeGenerator generator = new MyMazeGenerator();
@@ -21,7 +20,13 @@ public class ServerStrategyGenerateMaze implements IServerStrategy{
                 throw new IllegalArgumentException("maze dimension should be 2 integers");
             }
             Maze maze = generator.generate(mazeDimensions[0], mazeDimensions[1]);
-            toClient.write(maze.toByteArray());
+            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            SimpleCompressorOutputStream compressor = new SimpleCompressorOutputStream(byteOut);
+            compressor.write(maze.toByteArray());
+            compressor.close();
+
+            byte[] compressedData = byteOut.toByteArray();
+            toClient.writeObject(compressedData);
             toClient.flush();
             fromClient.close();
             toClient.close();
