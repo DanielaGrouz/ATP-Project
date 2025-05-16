@@ -1,25 +1,38 @@
 package Server;
 
-import Server.IServerStrategy;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
     private int port;
     private int listeningIntervalMS;
     private IServerStrategy strategy;
-    private boolean stop;
+    private volatile boolean stop;
+    private ExecutorService threadPool; // Thread pool
+    private Thread mainThread;
 
     public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
         this.port = port;
         this.listeningIntervalMS = listeningIntervalMS;
         this.strategy = strategy;
+        // initialize a new fixed thread pool with 2 threads:
+        this.threadPool = Executors.newFixedThreadPool(2);
+        this.mainThread = null;
     }
 
     public void start(){
+        Thread thread = new Thread(()->{
+            startLoop();
+        });
+        thread.start();
+        this.mainThread = thread;
+    }
+
+    private void startLoop(){
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(listeningIntervalMS);
@@ -30,22 +43,38 @@ public class Server {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("Client accepted: " + clientSocket.toString());
 
-                    try {
-                        strategy.applyStrategy(clientSocket.getInputStream(), clientSocket.getOutputStream());
-                        clientSocket.close();
-                    } catch (IOException e){
-                        e.printStackTrace();
-                    }
+                    // Insert the new task into the thread pool:
+                    threadPool.submit(() -> {
+                        handleClient(clientSocket);
+                    });
                 } catch (SocketTimeoutException e){
-                    System.out.println("Socket timeout");
+
                 }
             }
+            serverSocket.close();
+            //threadPool.shutdown(); // do not allow any new tasks into the thread pool (not doing anything to the current tasks and running threads)
+            threadPool.shutdownNow(); // do not allow any new tasks into the thread pool, and also interrupts all running threads (do not terminate the threads, so if they do not handle interrupts properly, they could never stop...)
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e);
+        }
+    }
+
+    private void handleClient(Socket clientSocket) {
+        try {
+            strategy.applyStrategy(clientSocket.getInputStream(), clientSocket.getOutputStream());
+            System.out.println("Done handling client: " + clientSocket.toString());
+            clientSocket.close();
+        } catch (IOException e){
+            System.out.println(e.getMessage());
         }
     }
 
     public void stop(){
         stop = true;
+        threadPool.shutdownNow();
+        if(mainThread != null){
+            mainThread.stop();
+        }
+        System.out.println("Stopping server...");
     }
 }

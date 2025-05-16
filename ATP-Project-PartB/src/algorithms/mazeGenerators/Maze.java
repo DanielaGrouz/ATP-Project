@@ -1,9 +1,10 @@
 package algorithms.mazeGenerators;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-public class Maze {
+public class Maze implements Serializable {
     private int[][] mazeMatrix;
     private int rows;
     private int columns;
