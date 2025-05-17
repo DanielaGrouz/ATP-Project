@@ -31,7 +31,7 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
                     searcher = new BestFirstSearch(); // using some default here
                 }
                 SearchableMaze searchableMaze = new SearchableMaze(maze);
-                System.out.println("Received dimensions");
+                System.out.println("Solved maze and saved solution to file");
                 solution = searcher.solve(searchableMaze);
                 writeSolutionToFile(maze, solution, mazeSearchingAlgorithm);
             }
@@ -52,6 +52,7 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
 
         File solutionFile = new File(fileName);
         if (solutionFile.exists()){
+            System.out.println("Reading solution from file");
             FileInputStream fileInStream = new FileInputStream(solutionFile);
             ObjectInputStream objectInStream = new ObjectInputStream(fileInStream);
             solution = (Solution) objectInStream.readObject();
