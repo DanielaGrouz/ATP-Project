@@ -4,6 +4,7 @@ import algorithms.mazeGenerators.SimpleMazeGenerator;
 import algorithms.search.*;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class ServerStrategySolveSearchProblem implements IServerStrategy{
     @Override
@@ -15,21 +16,25 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
         try{
             System.out.println("Waiting for object...");
             Maze maze = (Maze) fromClient.readObject();
-            SearchableMaze searchableMaze = new SearchableMaze(maze);
             String mazeSearchingAlgorithm = configurations.get("mazeSearchingAlgorithm");
-            ISearchingAlgorithm searcher;
-            if (mazeSearchingAlgorithm.equals("BestFirstSearch")){
-                searcher = new BestFirstSearch();
-            } else if (mazeSearchingAlgorithm.equals("BreadthFirstSearch")) {
-                searcher = new BreadthFirstSearch();
-            } else if (mazeSearchingAlgorithm.equals("DepthFirstSearch")) {
-                searcher = new DepthFirstSearch();
-            } else {
-                System.out.println("not found mazeSearchingAlgorithm for value " + mazeSearchingAlgorithm);
-                searcher = new BestFirstSearch(); // using some default here
+            Solution solution = findSolution(maze, mazeSearchingAlgorithm);
+            if (solution==null) { //the maze hasn't been solved before
+                ISearchingAlgorithm searcher;
+                if (mazeSearchingAlgorithm.equals("BestFirstSearch")){
+                    searcher = new BestFirstSearch();
+                } else if (mazeSearchingAlgorithm.equals("BreadthFirstSearch")) {
+                    searcher = new BreadthFirstSearch();
+                } else if (mazeSearchingAlgorithm.equals("DepthFirstSearch")) {
+                    searcher = new DepthFirstSearch();
+                } else {
+                    System.out.println("not found mazeSearchingAlgorithm for value " + mazeSearchingAlgorithm);
+                    searcher = new BestFirstSearch(); // using some default here
+                }
+                SearchableMaze searchableMaze = new SearchableMaze(maze);
+                System.out.println("Received dimensions");
+                solution = searcher.solve(searchableMaze);
+                writeSolutionToFile(maze, solution, mazeSearchingAlgorithm);
             }
-            System.out.println("Received dimensions");
-            Solution solution = searcher.solve(searchableMaze);
             toClient.writeObject(solution);
             toClient.flush();
             fromClient.close();
@@ -39,23 +44,28 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
         }
     }
 
-    private Solution findSolution(Maze maze){
+    private Solution findSolution(Maze maze, String mazeSearchingAlgorithm) throws IOException, ClassNotFoundException {
         Solution solution = null;
+        int mazeID = Arrays.hashCode(maze.toByteArray());
+        String tempDirectoryPath = System.getProperty("java.io.tmpdir");
+        String fileName = tempDirectoryPath + "\\solution_" + mazeID + "_" + mazeSearchingAlgorithm + ".sol";
 
-        //
-
+        File solutionFile = new File(fileName);
+        if (solutionFile.exists()){
+            FileInputStream fileInStream = new FileInputStream(solutionFile);
+            ObjectInputStream objectInStream = new ObjectInputStream(fileInStream);
+            solution = (Solution) objectInStream.readObject();
+        }
         return solution;
     }
 
-    private void writeSolutionToFile(Maze maze, Solution solution) {
-//            int mazeID = maze.getMazeID(); //.toString().hashCode();
-//            String fileName = System.getProperty("java.io.tmpdir") + '\\' + "solution_" + mazeID + ".sol";
-//             File solutionFile = new File(fileName);
-//            if (solutionFile.exists()) {
-//
-//            }
-        //FileOutputStream outStream = new FileOutputStream(fileName);
-        //ObjectOutputStream fileObjectOut = new ObjectOutputStream(outStream);
+    private void writeSolutionToFile(Maze maze, Solution solution, String mazeSearchingAlgorithm) throws IOException {
+        int mazeID = Arrays.hashCode(maze.toByteArray());
+        String tempDirectoryPath = System.getProperty("java.io.tmpdir");
+        String fileName = tempDirectoryPath + "\\solution_" + mazeID + "_" + mazeSearchingAlgorithm + ".sol";
 
+        FileOutputStream fileOutStream = new FileOutputStream(fileName);
+        ObjectOutputStream objectOutStream = new ObjectOutputStream(fileOutStream);
+        objectOutStream.writeObject(solution);
     }
 }
