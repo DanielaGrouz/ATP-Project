@@ -38,4 +38,24 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
             throw new IOException("object not found");
         }
     }
+
+    private Solution findSolution(Maze maze){
+        Solution solution = null;
+
+        //
+
+        return solution;
+    }
+
+    private void writeSolutionToFile(Maze maze, Solution solution) {
+//            int mazeID = maze.getMazeID(); //.toString().hashCode();
+//            String fileName = System.getProperty("java.io.tmpdir") + '\\' + "solution_" + mazeID + ".sol";
+//             File solutionFile = new File(fileName);
+//            if (solutionFile.exists()) {
+//
+//            }
+        //FileOutputStream outStream = new FileOutputStream(fileName);
+        //ObjectOutputStream fileObjectOut = new ObjectOutputStream(outStream);
+
+    }
 }

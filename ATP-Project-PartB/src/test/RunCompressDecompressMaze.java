@@ -15,19 +15,31 @@ public class RunCompressDecompressMaze {
         String mazeFileName = "savedMaze.maze";
         AMazeGenerator mazeGenerator = new MyMazeGenerator();
         Maze maze = mazeGenerator.generate(100, 100); //Generate new maze
+        //למחוק 2 שורות
+        System.out.println("Original maze bytes:");
+        System.out.println(java.util.Arrays.toString(maze.toByteArray()));
+
         try {
-// save maze to a file
-            OutputStream out = new SimpleCompressorOutputStream(new FileOutputStream(mazeFileName));
+            // save maze to a file
+            OutputStream out = new MyCompressorOutputStream(new FileOutputStream(mazeFileName));
             out.write(maze.toByteArray());
             out.flush();
             out.close();
+            // למחוק 6 שורות
+            byte[] compressedBytes = new byte[(int) new java.io.File(mazeFileName).length()];
+            try (FileInputStream fis = new FileInputStream(mazeFileName)) {
+                fis.read(compressedBytes);
+            }
+            System.out.println("Compressed maze bytes:");
+            System.out.println(java.util.Arrays.toString(compressedBytes));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
         byte[] savedMazeBytes = new byte[0];
         try {
-//read maze from file
-            InputStream in = new SimpleDecompressorInputStream(new FileInputStream(mazeFileName));
+            //read maze from file
+            InputStream in = new MyDecompressorInputStream(new FileInputStream(mazeFileName));
             savedMazeBytes = new byte[maze.toByteArray().length];
             in.read(savedMazeBytes);
             in.close();
