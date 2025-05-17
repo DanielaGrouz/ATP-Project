@@ -17,10 +17,11 @@ public class Server {
 
     public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
         this.port = port;
+        Configurations configurations = Configurations.getInstance();
         this.listeningIntervalMS = listeningIntervalMS;
         this.strategy = strategy;
         // initialize a new fixed thread pool with 2 threads:
-        this.threadPool = Executors.newFixedThreadPool(2);
+        this.threadPool = Executors.newFixedThreadPool(Integer.parseInt(configurations.get("threadPoolSize")));
         this.mainThread = null;
     }
 
