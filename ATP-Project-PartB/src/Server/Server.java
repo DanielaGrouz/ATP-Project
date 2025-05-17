@@ -72,8 +72,8 @@ public class Server {
     public void stop(){
         stop = true;
         threadPool.shutdownNow();
-        if(mainThread != null){
-            mainThread.stop();
+        if(mainThread != null && mainThread.isAlive()){
+            mainThread.interrupt();
         }
         System.out.println("Stopping server...");
     }
