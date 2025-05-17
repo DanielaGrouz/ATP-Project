@@ -6,8 +6,8 @@ import java.util.Properties;
 
 public class Configurations {
     private Properties properties = new Properties();
+    static private Configurations instance = null;
 
-    static Configurations instance = null;
     private Configurations(){
         try {
             InputStream input = getClass().getClassLoader().getResourceAsStream("resources/config.properties");

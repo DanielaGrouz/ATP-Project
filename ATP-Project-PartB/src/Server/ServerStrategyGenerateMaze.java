@@ -1,10 +1,7 @@
 package Server;
 
 import IO.SimpleCompressorOutputStream;
-import algorithms.mazeGenerators.IMazeGenerator;
-import algorithms.mazeGenerators.Maze;
-import algorithms.mazeGenerators.MyMazeGenerator;
-import algorithms.mazeGenerators.SimpleMazeGenerator;
+import algorithms.mazeGenerators.*;
 
 import java.io.*;
 
@@ -25,17 +22,17 @@ public class ServerStrategyGenerateMaze implements IServerStrategy{
             }else if (mazeGeneratingAlgorithm.equals("SimpleMazeGenerator")){
                 generator = new SimpleMazeGenerator();
             } else if (mazeGeneratingAlgorithm.equals("EmptyMazeGenerator")) {
-                generator = new SimpleMazeGenerator();
+                generator = new EmptyMazeGenerator();
             }else {
                 System.out.println("not found mazeGeneratingAlgorithm for value " + mazeGeneratingAlgorithm);
-                generator = new SimpleMazeGenerator(); // using some default here
+                generator = new SimpleMazeGenerator(); // simple maze is the default choice
             }
             if (mazeDimensions.length < 2){
-                throw new IllegalArgumentException("maze dimension should be 2 integers");
+                throw new IllegalArgumentException("maze dimensions should be 2 integers");
             }
             Maze maze = generator.generate(mazeDimensions[0], mazeDimensions[1]);
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            SimpleCompressorOutputStream compressor = new SimpleCompressorOutputStream(byteOut);
+            SimpleCompressorOutputStream compressor = new SimpleCompressorOutputStream(byteOut); //change to myCompressor
             compressor.write(maze.toByteArray());
             compressor.close();
 
