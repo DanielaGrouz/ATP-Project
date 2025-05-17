@@ -1,8 +1,10 @@
 package Server;
 
 import IO.SimpleCompressorOutputStream;
+import algorithms.mazeGenerators.IMazeGenerator;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
+import algorithms.mazeGenerators.SimpleMazeGenerator;
 
 import java.io.*;
 
@@ -12,10 +14,22 @@ public class ServerStrategyGenerateMaze implements IServerStrategy{
         System.out.println("got new request");
         ObjectInputStream fromClient = new ObjectInputStream(inFromClient);
         ObjectOutputStream toClient = new ObjectOutputStream(outToClient);
+        Configurations configurations = Configurations.getInstance();
         try{
             int[] mazeDimensions = (int[]) fromClient.readObject();
             System.out.println("Received dimensions");
-            MyMazeGenerator generator = new MyMazeGenerator();
+            String mazeGeneratingAlgorithm = configurations.get("mazeGeneratingAlgorithm");
+            IMazeGenerator generator;
+            if (mazeGeneratingAlgorithm.equals("MyMazeGenerator")){
+                generator = new MyMazeGenerator();
+            }else if (mazeGeneratingAlgorithm.equals("SimpleMazeGenerator")){
+                generator = new SimpleMazeGenerator();
+            } else if (mazeGeneratingAlgorithm.equals("EmptyMazeGenerator")) {
+                generator = new SimpleMazeGenerator();
+            }else {
+                System.out.println("not found mazeGeneratingAlgorithm for value " + mazeGeneratingAlgorithm);
+                generator = new SimpleMazeGenerator(); // using some default here
+            }
             if (mazeDimensions.length < 2){
                 throw new IllegalArgumentException("maze dimension should be 2 integers");
             }
