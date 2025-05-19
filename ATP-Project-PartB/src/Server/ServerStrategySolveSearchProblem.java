@@ -6,7 +6,22 @@ import algorithms.search.*;
 import java.io.*;
 import java.util.Arrays;
 
+/**
+ * A server strategy that solves a maze sent by the client.
+ * <p>
+ * If the solution already exists, it reads it from a file. Otherwise, it solves the maze,
+ * saves the solution, and sends it back to the client.
+ */
 public class ServerStrategySolveSearchProblem implements IServerStrategy{
+
+    /**
+     * Reads a maze from the client, solves it (or retrieves a saved solution),
+     * and sends the solution back.
+     *
+     * @param inFromClient  input stream from the client
+     * @param outToClient   output stream to the client
+     * @throws IOException if a communication or file error occurs
+     */
     @Override
     public void applyStrategy(InputStream inFromClient, OutputStream outToClient) throws IOException {
         System.out.println("got new request");
@@ -44,6 +59,13 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
         }
     }
 
+    /**
+     * Tries to load a saved solution from a file.
+     *
+     * @param maze                   the maze to solve
+     * @param mazeSearchingAlgorithm algorithm name
+     * @return Solution if found in file, otherwise null
+     */
     private Solution findSolution(Maze maze, String mazeSearchingAlgorithm) throws IOException, ClassNotFoundException {
         Solution solution = null;
         int mazeID = Arrays.hashCode(maze.toByteArray());
@@ -60,6 +82,13 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
         return solution;
     }
 
+    /**
+     * Saves a solution to a file for future use.
+     *
+     * @param maze                   the maze solved
+     * @param solution               the solution to save
+     * @param mazeSearchingAlgorithm algorithm name
+     */
     private void writeSolutionToFile(Maze maze, Solution solution, String mazeSearchingAlgorithm) throws IOException {
         int mazeID = Arrays.hashCode(maze.toByteArray());
         String tempDirectoryPath = System.getProperty("java.io.tmpdir");

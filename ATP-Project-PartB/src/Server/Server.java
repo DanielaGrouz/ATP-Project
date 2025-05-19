@@ -7,6 +7,10 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * A simple multi-threaded server that listens for client connections,
+ * handles them using a specified server strategy, and uses a thread pool to manage requests.
+ */
 public class Server {
     private int port;
     private int listeningIntervalMS;
@@ -15,6 +19,13 @@ public class Server {
     private ExecutorService threadPool; // Thread pool
     private Thread mainThread;
 
+    /**
+     * Constructs a new Server with the given port, timeout, and strategy.
+     *
+     * @param port the port to listen on
+     * @param listeningIntervalMS how often to check for a stop condition (in milliseconds)
+     * @param strategy the strategy to handle each client
+     */
     public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
         this.port = port;
         Configurations configurations = Configurations.getInstance();
@@ -25,6 +36,9 @@ public class Server {
         this.mainThread = null;
     }
 
+    /**
+     * Starts the server in a new thread.
+     */
     public void start(){
         Thread thread = new Thread(()->{
             startLoop();
@@ -33,6 +47,9 @@ public class Server {
         this.mainThread = thread;
     }
 
+    /**
+     * The main loop that accepts client connections and passes them to the thread pool.
+     */
     private void startLoop(){
         try {
             ServerSocket serverSocket = new ServerSocket(port);
@@ -59,16 +76,24 @@ public class Server {
         }
     }
 
+    /**
+     * Handles a single client using the configured strategy.
+     *
+     * @param clientSocket the client's socket
+     */
     private void handleClient(Socket clientSocket) {
         try {
             strategy.applyStrategy(clientSocket.getInputStream(), clientSocket.getOutputStream());
-            System.out.println("Done handling client: " + clientSocket.toString());
+           // System.out.println("Done handling client: " + clientSocket.toString());
             clientSocket.close();
         } catch (IOException e){
             System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * Stops the server and shuts down the thread pool.
+     */
     public void stop(){
         stop = true;
         threadPool.shutdownNow();

@@ -3,18 +3,33 @@ package IO;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * A custom OutputStream that compresses binary data using run-length encoding.
+ * <p>
+ * The first 20 bytes are written as-is (usually a header).
+ * After that, sequences of 0s and 1s are counted and compressed as byte values.
+ */
 public class SimpleCompressorOutputStream extends OutputStream {
     OutputStream out;
     int bytesCount;
     int currentByte;
     int indexCount;
 
+    /**
+     * Creates a new SimpleCompressorOutputStream that wraps another OutputStream.
+     *
+     * @param outputStream the stream to write compressed data to
+     */
     public SimpleCompressorOutputStream(OutputStream outputStream){
         this.out = outputStream;
         bytesCount = 0;
         currentByte = 0;
         indexCount = 0;
     }
+
+    /**
+     * Switches currentByte between 0 and 1.
+     */
     private void flipByte(){
         if (currentByte == 0){
             currentByte = 1;
@@ -23,6 +38,13 @@ public class SimpleCompressorOutputStream extends OutputStream {
         }
     }
 
+    /**
+     * Writes a byte to the stream. The first 20 bytes are written directly.
+     * After that, it compresses sequences of the same bit using run-length encoding.
+     *
+     * @param b the byte to write (only 0s and 1s expected after the header)
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public void write(int b) throws IOException {
         if (indexCount < 20){ // first 20 bytes are for start(i,j),end(i,j), number of rows

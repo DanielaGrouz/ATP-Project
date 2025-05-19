@@ -5,7 +5,21 @@ import algorithms.mazeGenerators.*;
 
 import java.io.*;
 
+/**
+ * A server strategy that generates a maze based on client input.
+ * <p>
+ * The client sends maze dimensions, and the server responds with a compressed maze.
+ */
 public class ServerStrategyGenerateMaze implements IServerStrategy{
+
+    /**
+     * Receives maze dimensions from the client, generates a maze using the configured generator,
+     * compresses it, and sends the compressed maze back to the client.
+     *
+     * @param inFromClient  input stream from the client
+     * @param outToClient   output stream to the client
+     * @throws IOException if there's a problem during communication or processing
+     */
     @Override
     public void applyStrategy(InputStream inFromClient, OutputStream outToClient) throws IOException {
         System.out.println("got new request");
