@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * A simple multi-threaded server that listens for client connections,
+ * A simple multithreaded server that listens for client connections,
  * handles them using a specified server strategy, and uses a thread pool to manage requests.
  */
 public class Server {
@@ -65,9 +65,7 @@ public class Server {
                     threadPool.submit(() -> {
                         handleClient(clientSocket);
                     });
-                } catch (SocketTimeoutException e){
-
-                }
+                } catch (SocketTimeoutException e){ }
             }
             serverSocket.close();
 //            threadPool.shutdownNow(); // do not allow any new tasks into the thread pool, and also interrupts all running threads (do not terminate the threads, so if they do not handle interrupts properly, they could never stop...)

@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 /**
  * A server strategy that solves a maze sent by the client.
- * <p>
  * If the solution already exists, it reads it from a file. Otherwise, it solves the maze,
  * saves the solution, and sends it back to the client.
  */
@@ -35,6 +34,7 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
             Solution solution = findSolution(maze, mazeSearchingAlgorithm);
             if (solution==null) { //the maze hasn't been solved before
                 ISearchingAlgorithm searcher;
+                //choose algorithm based on config
                 if (mazeSearchingAlgorithm.equals("BestFirstSearch")){
                     searcher = new BestFirstSearch();
                 } else if (mazeSearchingAlgorithm.equals("BreadthFirstSearch")) {
@@ -50,6 +50,7 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
                 solution = searcher.solve(searchableMaze);
                 writeSolutionToFile(maze, solution, mazeSearchingAlgorithm);
             }
+            //send the solution back to the client and close streams
             toClient.writeObject(solution);
             toClient.flush();
             fromClient.close();
@@ -60,15 +61,18 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
     }
 
     /**
-     * Tries to load a saved solution from a file.
+     * Tries to load a saved solution from a file,The file name is based on the hash of the maze and algorithm name.
      *
-     * @param maze                   the maze to solve
+     * @param maze the maze to solve
      * @param mazeSearchingAlgorithm algorithm name
      * @return Solution if found in file, otherwise null
+     * @throws IOException if there is a file reading error
+     * @throws ClassNotFoundException if the solution object cannot be read
      */
     private Solution findSolution(Maze maze, String mazeSearchingAlgorithm) throws IOException, ClassNotFoundException {
         Solution solution = null;
         int mazeID = Arrays.hashCode(maze.toByteArray());
+        //use system temporary directory for storing solutions
         String tempDirectoryPath = System.getProperty("java.io.tmpdir");
         String fileName = tempDirectoryPath + "\\solution_" + mazeID + "_" + mazeSearchingAlgorithm + ".sol";
 
@@ -85,15 +89,18 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
     /**
      * Saves a solution to a file for future use.
      *
-     * @param maze                   the maze solved
-     * @param solution               the solution to save
-     * @param mazeSearchingAlgorithm algorithm name
+     * @param maze the maze that was solved
+     * @param solution the solution to save
+     * @param mazeSearchingAlgorithm algorithm used to solve the maze
+     * @throws IOException if there is an error during file writing
      */
     private void writeSolutionToFile(Maze maze, Solution solution, String mazeSearchingAlgorithm) throws IOException {
         int mazeID = Arrays.hashCode(maze.toByteArray());
+        //use system temporary directory for storing solutions
         String tempDirectoryPath = System.getProperty("java.io.tmpdir");
         String fileName = tempDirectoryPath + "\\solution_" + mazeID + "_" + mazeSearchingAlgorithm + ".sol";
 
+        //write solution to file
         FileOutputStream fileOutStream = new FileOutputStream(fileName);
         ObjectOutputStream objectOutStream = new ObjectOutputStream(fileOutStream);
         objectOutStream.writeObject(solution);

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 /**
  * A custom InputStream that decompresses data compressed with MyCompressorOutputStream.
- * <p>
  * Reads 20 header bytes as-is, then unpacks 8 bits from each following byte.
  */
 public class MyDecompressorInputStream extends InputStream {

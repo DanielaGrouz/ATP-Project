@@ -5,9 +5,8 @@ import java.io.OutputStream;
 
 /**
  * A custom OutputStream that compresses binary data.
- * <p>
- * The first 20 bytes are written as-is (usually a header).
- * The rest of the data is compressed by packing 8 bits into one byte.
+ * The first 20 bytes are written as-is.
+ * The rest of the data is compressed by packing 8 bits into one byte (Bit Packing).
  */
 public class MyCompressorOutputStream extends OutputStream {
     private OutputStream out;

@@ -5,8 +5,7 @@ import java.io.OutputStream;
 
 /**
  * A custom OutputStream that compresses binary data using run-length encoding.
- * <p>
- * The first 20 bytes are written as-is (usually a header).
+ * The first 20 bytes are written as-is.
  * After that, sequences of 0s and 1s are counted and compressed as byte values.
  */
 public class SimpleCompressorOutputStream extends OutputStream {

@@ -30,6 +30,13 @@ public class Maze implements Serializable {
         this.end = calcPosition();
     }
 
+    /**
+     * constructor to Maze class - builds a Maze object from a byte array.
+     * the format is: [start_row, start_col, end_row, end_col, rows, flattened matrix]
+     *
+     * @param array byte array that represents the maze
+     * @throws IllegalArgumentException if the input array does not match the expected format
+     */
     public Maze(byte[] array){
         ByteBuffer buffer = ByteBuffer.wrap(array);
 
@@ -38,6 +45,7 @@ public class Maze implements Serializable {
         this.rows = buffer.getInt();
         this.columns = (array.length - 4 * 5) / this.rows;
         this.mazeMatrix = new int[rows][columns];
+        //fill maze matrix with the values from the byte array
         for (int i=0;i< rows; i++){
             for(int j=0;j<columns;j++){
                 mazeMatrix[i][j] = buffer.get();
@@ -189,17 +197,23 @@ public class Maze implements Serializable {
         return mazeMatrix;
     }
 
+
+    /**
+     * converts the maze to a byte array.
+     * format: [start_row, start_col, end_row, end_col, rows, flattened matrix]
+     *
+     * @return byte array that represents the maze
+     */
     public byte[] toByteArray(){
-        // the format is [start_row,start_column, end_row,end_column, rows, ...matrix in one array(flatten)]
-        // columns can be computed from array length
+        //the format is [start_row,start_column, end_row,end_column, rows, matrix in one array(flatten)]
+        //columns can be computed from array length
         ByteBuffer buffer = ByteBuffer.allocate(4*5 + rows * columns);
         buffer.putInt(start.getRowIndex());
         buffer.putInt(start.getColumnIndex());
-
         buffer.putInt(end.getRowIndex());
         buffer.putInt(end.getColumnIndex());
-
         buffer.putInt(rows);
+        //add maze matrix values (0 or 1) to the buffer
         for (int i = 0;i<rows; i++){
             for (int j=0;j < columns; j ++){
                 buffer.put((byte) (mazeMatrix[i][j])); // value is always 0 or 1
@@ -207,5 +221,4 @@ public class Maze implements Serializable {
         };
         return buffer.array();
     }
-
 }

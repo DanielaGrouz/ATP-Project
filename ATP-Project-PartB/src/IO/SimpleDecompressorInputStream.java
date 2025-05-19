@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 /**
  * A custom InputStream that decompresses data written by SimpleCompressorOutputStream.
- * <p>
  * Reads the first 20 bytes as a header, then uses run-length decoding to restore the original data.
  */
 public class SimpleDecompressorInputStream extends InputStream {

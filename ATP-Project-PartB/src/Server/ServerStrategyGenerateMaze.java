@@ -7,7 +7,6 @@ import java.io.*;
 
 /**
  * A server strategy that generates a maze based on client input.
- * <p>
  * The client sends maze dimensions, and the server responds with a compressed maze.
  */
 public class ServerStrategyGenerateMaze implements IServerStrategy{
@@ -51,6 +50,7 @@ public class ServerStrategyGenerateMaze implements IServerStrategy{
             compressor.close();
 
             byte[] compressedData = byteOut.toByteArray();
+            //send the solution back to the client and close streams
             toClient.writeObject(compressedData);
             toClient.flush();
             fromClient.close();
