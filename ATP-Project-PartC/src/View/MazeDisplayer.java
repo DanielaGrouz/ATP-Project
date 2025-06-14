@@ -1,5 +1,6 @@
 package View;
 
+import algorithms.mazeGenerators.Maze;
 import algorithms.search.Solution;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -12,15 +13,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class MazeDisplayer extends Canvas {
-    private int[][] maze;
+    private Maze maze;
     private Solution solution;
-    // player position:
+    //player position:
     private int playerRow = 0;
     private int playerCol = 0;
-    // wall and player images:
+    //goal position:
+    private int goalRow = 0;
+    private int goalCol = 0;
+    //wall and player images:
     StringProperty imageFileNameWall = new SimpleStringProperty();
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
-
+    StringProperty imageFileNameGoal = new SimpleStringProperty();
 
     public int getPlayerRow() {
         return playerRow;
@@ -30,9 +34,23 @@ public class MazeDisplayer extends Canvas {
         return playerCol;
     }
 
+    public int getGoalRow() {
+        return goalRow;
+    }
+
+    public int getGoalCol() {
+        return goalCol;
+    }
+
     public void setPlayerPosition(int row, int col) {
         this.playerRow = row;
         this.playerCol = col;
+        draw();
+    }
+
+    public void setGoalPosition(int row, int col) {
+        this.goalRow = row;
+        this.goalCol = col;
         draw();
     }
 
@@ -65,7 +83,18 @@ public class MazeDisplayer extends Canvas {
         this.imageFileNamePlayer.set(imageFileNamePlayer);
     }
 
-    public void drawMaze(int[][] maze) {
+    public String getImageFileNameGoal() {
+        return imageFileNameGoal.get();
+    }
+
+    public String imageFileNameGoalProperty() {
+        return imageFileNameGoal.get();
+    }
+
+    public void setImageFileNameGoal(String imageFileNameGoal) {
+        this.imageFileNameGoal.set(imageFileNameGoal);
+    }
+    public void drawMaze(Maze maze) {
         this.maze = maze;
         draw();
     }
@@ -74,8 +103,8 @@ public class MazeDisplayer extends Canvas {
         if(maze != null){
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
-            int rows = maze.length;
-            int cols = maze[0].length;
+            int rows = maze.getRows();
+            int cols = maze.getColumns();
 
             double cellHeight = canvasHeight / rows;
             double cellWidth = canvasWidth / cols;
@@ -88,6 +117,7 @@ public class MazeDisplayer extends Canvas {
             if(solution != null)
                 drawSolution(graphicsContext, cellHeight, cellWidth);
             drawPlayer(graphicsContext, cellHeight, cellWidth);
+            drawMazeGoal(graphicsContext,cellHeight,cellWidth);
         }
     }
 
@@ -108,7 +138,7 @@ public class MazeDisplayer extends Canvas {
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                if(maze[i][j] == 1){
+                if(maze.getMazeMatrix()[i][j] == 1){
                     //if it is a wall:
                     double x = j * cellWidth;
                     double y = i * cellHeight;
@@ -136,5 +166,24 @@ public class MazeDisplayer extends Canvas {
             graphicsContext.fillRect(x, y, cellWidth, cellHeight);
         else
             graphicsContext.drawImage(playerImage, x, y, cellWidth, cellHeight);
+    }
+
+    private void drawMazeGoal(GraphicsContext graphicsContext, double cellHeight, double cellWidth){
+        double x = getGoalCol() * cellWidth;
+        double y = getGoalRow() * cellHeight;
+        graphicsContext.setFill(Color.GREEN);
+
+        Image goalImage = null;
+        try {
+            goalImage = new Image(new FileInputStream(getImageFileNameGoal()));
+        } catch (FileNotFoundException e) {
+            System.out.println("There is no goal image");
+        }
+        if(goalImage == null){
+            graphicsContext.fillRect(x,y,cellWidth,cellHeight);
+        }
+        else{
+            graphicsContext.drawImage(goalImage,x,y,cellWidth,cellHeight);
+        }
     }
 }

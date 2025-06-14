@@ -1,6 +1,7 @@
 package ViewModel;
 import Model.IModel;
 import Model.MovementDirection;
+import algorithms.mazeGenerators.Maze;
 import algorithms.search.Solution;
 import javafx.scene.input.KeyEvent;
 
@@ -21,7 +22,7 @@ public class MyViewModel extends Observable implements Observer{
         notifyObservers(arg);
     }
 
-    public int[][] getMaze(){
+    public Maze getMaze(){
         return model.getMaze();
     }
 
@@ -31,6 +32,14 @@ public class MyViewModel extends Observable implements Observer{
 
     public int getPlayerCol(){
         return model.getPlayerCol();
+    }
+
+    public int getGoalRow(){
+        return model.getGoalRow();
+    }
+
+    public int getGoalCol(){
+        return model.getGoalCol();
     }
 
     public Solution getSolution(){
@@ -59,4 +68,5 @@ public class MyViewModel extends Observable implements Observer{
     public void solveMaze(){
         model.solveMaze();
     }
+
 }

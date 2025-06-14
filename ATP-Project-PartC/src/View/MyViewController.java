@@ -31,9 +31,12 @@ public class MyViewController implements IView , Observer {
     public MazeDisplayer mazeDisplayer;
     public Label playerRow;
     public Label playerCol;
-
+    public Label goalRow;
+    public Label goalCol;
     StringProperty updatePlayerRow = new SimpleStringProperty();
     StringProperty updatePlayerCol = new SimpleStringProperty();
+    StringProperty updateGoalRow = new SimpleStringProperty();
+    StringProperty updateGoalCol = new SimpleStringProperty();
 
     public String getUpdatePlayerRow() {
         return updatePlayerRow.get();
@@ -51,10 +54,28 @@ public class MyViewController implements IView , Observer {
         this.updatePlayerCol.set(updatePlayerCol + "");
     }
 
-    //@Override
+    public String getUpdateGoalRow() {
+        return updateGoalRow.get();
+    }
+
+    public void setUpdateGoalRow(int updateGoalRow) {
+        this.updateGoalRow.set(updateGoalRow + "");
+    }
+
+    public String getUpdateGoalCol() {
+        return updateGoalCol.get();
+    }
+
+    public void setUpdateGoalCol(int updateGoalCol) {
+        this.updateGoalCol.set(updateGoalCol + "");
+    }
+
+    @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playerRow.textProperty().bind(updatePlayerRow);
         playerCol.textProperty().bind(updatePlayerCol);
+        goalRow.textProperty().bind(updateGoalRow);
+        goalCol.textProperty().bind(updateGoalCol);
     }
 
     public void generateMaze(ActionEvent actionEvent) {
@@ -91,6 +112,12 @@ public class MyViewController implements IView , Observer {
         setUpdatePlayerCol(col);
     }
 
+    public void setGoalPosition(int row, int col){
+        mazeDisplayer.setGoalPosition(row, col);
+        setUpdateGoalRow(row);
+        setUpdateGoalCol(col);
+    }
+
     public void mouseClicked(MouseEvent mouseEvent) {
         mazeDisplayer.requestFocus();
     }
@@ -116,14 +143,7 @@ public class MyViewController implements IView , Observer {
 
     private void mazeGenerated() {
         mazeDisplayer.drawMaze(viewModel.getMaze());
+        setGoalPosition(viewModel.getGoalRow(), viewModel.getGoalCol());
     }
 
-
-//    @FXML
-//    private Label welcomeText;
-//
-//    @FXML
-//    protected void onHelloButtonClick() {
-//        welcomeText.setText("Welcome to JavaFX Application!");
-//    }
 }

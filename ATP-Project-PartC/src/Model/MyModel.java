@@ -1,5 +1,6 @@
 package Model;
 
+import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
 
 import java.util.Observable;
@@ -8,11 +9,14 @@ import algorithms.search.Solution;
 
 
 public class MyModel extends Observable implements IModel{
-    private int[][] maze; //TODO: לשנות סוג
+    private Maze maze;
     private int playerRow;
     private int playerCol;
     private Solution solution;
     private MyMazeGenerator generator;
+    private int goalRow;
+    private int goalCol;
+    private boolean reachedGoal;
 
     public MyModel() {
         generator = new MyMazeGenerator();
@@ -20,36 +24,57 @@ public class MyModel extends Observable implements IModel{
 
     @Override
     public void generateMaze(int rows, int cols) {
-        maze = generator.generate(rows, cols).getMazeMatrix();
+        maze = generator.generate(rows, cols);
         setChanged();
         notifyObservers("maze generated");
+        goalRow=maze.getGoalPosition().getRowIndex();
+        goalCol=maze.getGoalPosition().getColumnIndex();
+        reachedGoal = false;
         // start position:
-        movePlayer(0, 0);
+        movePlayer(maze.getStartPosition().getRowIndex(), maze.getStartPosition().getColumnIndex());
     }
 
     @Override
-    public int[][] getMaze() {
+    public Maze getMaze() {
         return maze;
     }
 
     @Override
     public void updatePlayerLocation(MovementDirection direction) {
-        switch (direction) {
-            case UP -> {
-                if (playerRow > 0)
-                    movePlayer(playerRow - 1, playerCol);
-            }
-            case DOWN -> {
-                if (playerRow < maze.length - 1)
-                    movePlayer(playerRow + 1, playerCol);
-            }
-            case LEFT -> {
-                if (playerCol > 0)
-                    movePlayer(playerRow, playerCol - 1);
-            }
-            case RIGHT -> {
-                if (playerCol < maze[0].length - 1)
-                    movePlayer(playerRow, playerCol + 1);
+        if (!reachedGoal){
+            switch (direction) {
+                case UP -> {
+                    if (playerRow > 0 && maze.getMazeMatrix()[playerRow-1][playerCol] != 1) {
+                        movePlayer(playerRow - 1, playerCol);
+                        if(reachedGoal()){
+                            reachedGoal = true;
+                        }
+                    }
+                }
+                case DOWN -> {
+                    if (playerRow < maze.getRows() - 1  && maze.getMazeMatrix()[playerRow+1][playerCol] != 1){
+                        movePlayer(playerRow + 1, playerCol);
+                        if(reachedGoal()){
+                            reachedGoal = true;
+                        }
+                    }
+                }
+                case LEFT -> {
+                    if (playerCol > 0  && maze.getMazeMatrix()[playerRow][playerCol-1] != 1){
+                        movePlayer(playerRow, playerCol - 1);
+                        if(reachedGoal()){
+                            reachedGoal = true;
+                        }
+                    }
+                }
+                case RIGHT -> {
+                    if (playerCol < maze.getColumns() - 1 && maze.getMazeMatrix()[playerRow][playerCol+1] != 1){
+                        movePlayer(playerRow, playerCol + 1);
+                        if(reachedGoal()){
+                            reachedGoal = true;
+                        }
+                    }
+                }
             }
         }
 
@@ -73,6 +98,16 @@ public class MyModel extends Observable implements IModel{
     }
 
     @Override
+    public int getGoalRow() {
+        return goalRow;
+    }
+
+    @Override
+    public int getGoalCol() {
+        return goalCol;
+    }
+
+    @Override
     public void assignObserver(Observer o) {
         this.addObserver(o);
     }
@@ -88,5 +123,13 @@ public class MyModel extends Observable implements IModel{
     @Override
     public Solution getSolution() {
         return solution;
+    }
+
+    @Override
+    public boolean reachedGoal(){
+        if(playerRow == goalRow && playerCol == goalCol){
+            return true;
+        }
+        return false;
     }
 }
