@@ -49,12 +49,12 @@
                     <TextField fx:id="textField_mazeColumns" text="50" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Button onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0" text="Generate Maze" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                     <Button cancelButton="true" onAction="#solveMaze" prefHeight="25.0" prefWidth="167.0" text="Solve Maze" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                    <Label text="Player Row = " GridPane.rowIndex="4" />
-                    <Label text="Player Col = " GridPane.rowIndex="5" />
-                    <Label fx:id="playerRow" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                    <Label fx:id="playerCol" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                    <Label text="Goal Row = " GridPane.rowIndex="6" />
-                    <Label text="Goal Col = " GridPane.rowIndex="7" />
+                    <Label text="Player Row = " GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <Label text="Player Col = " GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                    <Label fx:id="playerRow" GridPane.columnIndex="1" GridPane.rowIndex="4" text="-"/>
+                    <Label fx:id="playerCol" GridPane.columnIndex="1" GridPane.rowIndex="5" text="-"/>
+                    <Label text="Goal Row = " GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                    <Label text="Goal Col = " GridPane.columnIndex="0" GridPane.rowIndex="7" />
                     <Label fx:id="goalRow" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                     <Label fx:id="goalCol" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                 </GridPane>

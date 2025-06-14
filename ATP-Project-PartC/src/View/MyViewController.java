@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -18,7 +19,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
 
-public class MyViewController implements IView , Observer {
+public class MyViewController implements IView ,Observer, Initializable{
     public MyViewModel viewModel;
 
     public void setViewModel(MyViewModel viewModel) {
@@ -69,7 +70,7 @@ public class MyViewController implements IView , Observer {
     public void setUpdateGoalCol(int updateGoalCol) {
         this.updateGoalCol.set(updateGoalCol + "");
     }
-
+    @FXML
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playerRow.textProperty().bind(updatePlayerRow);
@@ -86,9 +87,9 @@ public class MyViewController implements IView , Observer {
     }
 
     public void solveMaze(ActionEvent actionEvent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText("Solving maze...");
-        alert.show();
+//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//        alert.setContentText("Solving maze...");
+//        alert.show();
         viewModel.solveMaze();
     }
 
@@ -129,6 +130,7 @@ public class MyViewController implements IView , Observer {
             case "maze generated" -> mazeGenerated();
             case "player moved" -> playerMoved();
             case "maze solved" -> mazeSolved();
+            case "goal reached" -> goalReached();
             default -> System.out.println("Not implemented change: " + change);
         }
     }
@@ -144,6 +146,18 @@ public class MyViewController implements IView , Observer {
     private void mazeGenerated() {
         mazeDisplayer.drawMaze(viewModel.getMaze());
         setGoalPosition(viewModel.getGoalRow(), viewModel.getGoalCol());
+        mazeDisplayer.setGoalPosition(viewModel.getGoalRow(), viewModel.getGoalCol());
     }
+
+    private void goalReached() {
+        System.out.println(">> ViewController: Reached goal!");
+        playerMoved();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Congratulations!");
+        alert.setHeaderText(null);
+        alert.setContentText("You've reached the goal!");
+        alert.showAndWait();
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package View;
 
 import algorithms.mazeGenerators.Maze;
+import algorithms.search.MazeState;
 import algorithms.search.Solution;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -96,6 +97,7 @@ public class MazeDisplayer extends Canvas {
     }
     public void drawMaze(Maze maze) {
         this.maze = maze;
+        solution=null;
         draw();
     }
 
@@ -112,7 +114,6 @@ public class MazeDisplayer extends Canvas {
             GraphicsContext graphicsContext = getGraphicsContext2D();
             //clear the canvas:
             graphicsContext.clearRect(0, 0, canvasWidth, canvasHeight);
-
             drawMazeWalls(graphicsContext, cellHeight, cellWidth, rows, cols);
             if(solution != null)
                 drawSolution(graphicsContext, cellHeight, cellWidth);
@@ -122,8 +123,35 @@ public class MazeDisplayer extends Canvas {
     }
 
     private void drawSolution(GraphicsContext graphicsContext, double cellHeight, double cellWidth) {
-        // need to be implemented
         System.out.println("drawing solution...");
+
+        for(int i=0; i<solution.getSolutionPath().size();i++){
+            //move on the solution path
+            int row = ((MazeState) solution.getSolutionPath().get(i)).getRow();
+            int col = ((MazeState) solution.getSolutionPath().get(i)).getCol();
+            //if this point in the solution path is not a wall
+            if(maze.getMazeMatrix()[row][col]==0){
+                //call the function that add jellybean
+                paintPosition(row, col, graphicsContext, cellHeight, cellWidth);
+            }
+        }
+    }
+
+    private void paintPosition(int r,int c, GraphicsContext graphicsContext, double Height, double Width) {
+        if (maze != null) {
+
+            double cellHeight = Height;
+            double cellWidth = Width;
+
+            // x, y are the location of the specific coordinate that is part of the solution
+            double x = c * cellWidth;
+            double y = r * cellHeight;
+
+            graphicsContext.setGlobalAlpha(0.5);
+            graphicsContext.setFill(Color.GREEN);
+            graphicsContext.fillRect(x, y, cellWidth, cellHeight);
+            graphicsContext.setGlobalAlpha(1.0);
+        }
     }
 
     private void drawMazeWalls(GraphicsContext graphicsContext, double cellHeight, double cellWidth, int rows, int cols) {

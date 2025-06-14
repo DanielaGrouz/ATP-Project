@@ -1,6 +1,6 @@
-.root {
+/*.root {
     -fx-background-color: bisque;
-}
+}*/
 
 Button {
     -fx-text-fill: white;

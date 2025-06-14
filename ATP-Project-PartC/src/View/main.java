@@ -15,14 +15,16 @@ public class main extends Application {
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MyView.fxml"));
         Parent root = fxmlLoader.load();
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 1000, 700));
-        primaryStage.show();
 
         IModel model = new MyModel();
         MyViewModel viewModel = new MyViewModel(model);
         MyViewController view = fxmlLoader.getController();
         view.setViewModel(viewModel);
+        viewModel.addObserver(view);
+
+        primaryStage.setTitle("Hello World");
+        primaryStage.setScene(new Scene(root, 1000, 700));
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
