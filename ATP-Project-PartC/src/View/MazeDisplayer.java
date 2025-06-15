@@ -29,7 +29,7 @@ public class MazeDisplayer extends Canvas {
 
     private double zoomFactor = 1.0;
     private final double baseCellSize = 10;
-    private int cellSize = 10;
+    private final int cellSize = 10;
 
     public MazeDisplayer() {
         setOnScroll(event -> {
@@ -99,19 +99,6 @@ public class MazeDisplayer extends Canvas {
         return (int)(x / cellWidth);
     }
 
-
-
-
-    public void setMaze(Maze maze) {
-        this.maze = maze;
-        redrawMaze();
-    }
-
-    public void setCellSize(int cellSize) {
-        this.cellSize = cellSize;
-        redrawMaze();
-    }
-
     public void redrawMaze() {
         if (maze == null) return;
 
@@ -162,11 +149,6 @@ public class MazeDisplayer extends Canvas {
         return (dRow <= 1 && dCol <= 1 && !(dRow == 0 && dCol == 0));
     }
 
-    public void resetZoom() {
-        zoomFactor = 1.0;
-        draw();
-    }
-
     private void draw() {
         if (maze != null) {
             int rows = maze.getRows();
@@ -190,7 +172,6 @@ public class MazeDisplayer extends Canvas {
             drawMazeGoal(graphicsContext, cellHeight, cellWidth);
         }
     }
-
 
     private void paintPosition(int r, int c, GraphicsContext graphicsContext, double Height, double Width) {
         if (maze != null) {

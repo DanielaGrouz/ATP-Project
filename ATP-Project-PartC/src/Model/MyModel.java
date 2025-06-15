@@ -195,7 +195,6 @@ public class MyModel extends Observable implements IModel{
     }
 
     public void movePlayerTo(int row, int col) {
-        // בדוק חוקיות מיקום לפני העדכון (לא קיר וכו')
         if(row >= 0 && row < maze.getRows() && col >= 0 && col < maze.getColumns()) {
             if(maze.getMazeMatrix()[row][col] == 0) {
                 movePlayer(row, col);
