@@ -6,19 +6,19 @@ import algorithms.search.Solution;
 
 
 public interface IModel {
-    public void generateMaze(int rows, int cols);
-    public Maze getMaze();
+    void generateMaze(int rows, int cols);
+    Maze getMaze();
 
-    public int getPlayerRow();
-    public int getPlayerCol();
-    public int getGoalRow();
-    public int getGoalCol();
+    int getPlayerRow();
+    int getPlayerCol();
+    int getGoalRow();
+    int getGoalCol();
 
-    public void updatePlayerLocation(MovementDirection direction);
-    public void assignObserver(Observer o);
-    public void solveMaze();
-    public Solution getSolution();
-    public boolean reachedGoal();
+    void updatePlayerLocation(MovementDirection direction);
+    void assignObserver(Observer o);
+    void solveMaze();
+    Solution getSolution();
+    boolean reachedGoal();
 //    public void setPlayerRow(int row);
 //    public void setPlayerCol(int col);
 }

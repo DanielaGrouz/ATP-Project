@@ -24,6 +24,7 @@
 <!--    <Button text="Hello!" onAction="#onHelloButtonClick"/>-->
 <!--</VBox>-->
 
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane onMouseClicked="#mouseClicked" prefHeight="408.0" prefWidth="594.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
     <left>
         <VBox prefHeight="200.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
@@ -97,14 +98,27 @@
             </children>
         </VBox>
     </top>
+<!--    <center>-->
+<!--        <Pane BorderPane.alignment="CENTER">-->
+<!--            <children>-->
+<!--                <MazeDisplayer fx:id="mazeDisplayer" height="400.0" imageFileNamePlayer="./ATP-Project-PartC/resources/images/mario.jpg" imageFileNameGoal="./ATP-Project-PartC/resources/images/star.jpg" imageFileNameWall="./ATP-Project-PartC/resources/images/wall.png" onKeyPressed="#keyPressed" width="400.0" />-->
+<!--            </children>-->
+<!--            <padding>-->
+<!--                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />-->
+<!--            </padding>-->
+<!--        </Pane>-->
+<!--    </center>-->
     <center>
-        <Pane BorderPane.alignment="CENTER">
-            <children>
-                <MazeDisplayer fx:id="mazeDisplayer" height="400.0" imageFileNamePlayer="./ATP-Project-PartC/resources/images/mario.jpg" imageFileNameGoal="./ATP-Project-PartC/resources/images/star.jpg" imageFileNameWall="./ATP-Project-PartC/resources/images/wall.png" onKeyPressed="#keyPressed" width="400.0" />
-            </children>
-            <padding>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </padding>
-        </Pane>
+        <ScrollPane fx:id="mazeScrollPane" pannable="true" BorderPane.alignment="CENTER" prefWidth="600" prefHeight="600" >
+            <content>
+                <MazeDisplayer fx:id="mazeDisplayer"
+                               imageFileNamePlayer="./ATP-Project-PartC/resources/images/mario.jpg"
+                               imageFileNameGoal="./ATP-Project-PartC/resources/images/star.jpg"
+                               imageFileNameWall="./ATP-Project-PartC/resources/images/wall.png"
+                               onKeyPressed="#keyPressed"
+                />
+            </content>
+        </ScrollPane>
     </center>
+
 </BorderPane>
