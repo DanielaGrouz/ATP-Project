@@ -23,7 +23,7 @@ public class main extends Application {
         viewModel.addObserver(view);
 
         primaryStage.setTitle("Maze Project");
-        primaryStage.setScene(new Scene(root, 1000, 700));
+        primaryStage.setScene(new Scene(root, 1000, 650));
         primaryStage.show();
     }
 
