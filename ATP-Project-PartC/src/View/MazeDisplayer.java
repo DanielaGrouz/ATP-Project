@@ -89,6 +89,19 @@ public class MazeDisplayer extends Canvas {
         });
     }
 
+    public int getRowFromY(double y) {
+        double cellHeight = getHeight() / maze.getRows();
+        return (int)(y / cellHeight);
+    }
+
+    public int getColFromX(double x) {
+        double cellWidth = getWidth() / maze.getColumns();
+        return (int)(x / cellWidth);
+    }
+
+
+
+
     public void setMaze(Maze maze) {
         this.maze = maze;
         redrawMaze();

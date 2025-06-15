@@ -54,69 +54,79 @@ public class MyModel extends Observable implements IModel{
     }
 
     @Override
-    public void updatePlayerLocation(MovementDirection direction) {
-        if (!reachedGoal){
-            switch (direction) {
-                case UP -> {
-                    if (playerRow > 0 && maze.getMazeMatrix()[playerRow-1][playerCol] != 1) {
-                        movePlayer(playerRow - 1, playerCol);
-                    }
+    public boolean updatePlayerLocation(MovementDirection direction) {
+        if (reachedGoal) {
+            return false;
+        }
+
+        switch (direction) {
+            case UP -> {
+                if (playerRow > 0 && maze.getMazeMatrix()[playerRow - 1][playerCol] != 1) {
+                    movePlayer(playerRow - 1, playerCol);
+                    return true;
                 }
-                case DOWN -> {
-                    if (playerRow < maze.getRows() - 1  && maze.getMazeMatrix()[playerRow+1][playerCol] != 1){
-                        movePlayer(playerRow + 1, playerCol);
-                    }
+            }
+            case DOWN -> {
+                if (playerRow < maze.getRows() - 1 && maze.getMazeMatrix()[playerRow + 1][playerCol] != 1) {
+                    movePlayer(playerRow + 1, playerCol);
+                    return true;
                 }
-                case LEFT -> {
-                    if (playerCol > 0  && maze.getMazeMatrix()[playerRow][playerCol-1] != 1){
-                        movePlayer(playerRow, playerCol - 1);
-                    }
+            }
+            case LEFT -> {
+                if (playerCol > 0 && maze.getMazeMatrix()[playerRow][playerCol - 1] != 1) {
+                    movePlayer(playerRow, playerCol - 1);
+                    return true;
                 }
-                case RIGHT -> {
-                    if (playerCol < maze.getColumns() - 1 && maze.getMazeMatrix()[playerRow][playerCol+1] != 1){
-                        movePlayer(playerRow, playerCol + 1);
-                    }
+            }
+            case RIGHT -> {
+                if (playerCol < maze.getColumns() - 1 && maze.getMazeMatrix()[playerRow][playerCol + 1] != 1) {
+                    movePlayer(playerRow, playerCol + 1);
+                    return true;
                 }
-                case UP_LEFT -> {
-                    if (playerRow > 0 && playerCol > 0 &&
-                            maze.getMazeMatrix()[playerRow - 1][playerCol - 1] != 1) {
-                        movePlayer(playerRow - 1, playerCol - 1);
-                    }
+            }
+            case UP_LEFT -> {
+                if (playerRow > 0 && playerCol > 0 && maze.getMazeMatrix()[playerRow - 1][playerCol - 1] != 1) {
+                    movePlayer(playerRow - 1, playerCol - 1);
+                    return true;
                 }
-                case UP_RIGHT -> {
-                    if (playerRow > 0 && playerCol < maze.getColumns() - 1 &&
-                            maze.getMazeMatrix()[playerRow - 1][playerCol + 1] != 1) {
-                        movePlayer(playerRow - 1, playerCol + 1);
-                    }
+            }
+            case UP_RIGHT -> {
+                if (playerRow > 0 && playerCol < maze.getColumns() - 1 && maze.getMazeMatrix()[playerRow - 1][playerCol + 1] != 1) {
+                    movePlayer(playerRow - 1, playerCol + 1);
+                    return true;
                 }
-                case DOWN_LEFT -> {
-                    if (playerRow < maze.getRows() - 1 && playerCol > 0 &&
-                            maze.getMazeMatrix()[playerRow + 1][playerCol - 1] != 1) {
-                        movePlayer(playerRow + 1, playerCol - 1);
-                    }
+            }
+            case DOWN_LEFT -> {
+                if (playerRow < maze.getRows() - 1 && playerCol > 0 && maze.getMazeMatrix()[playerRow + 1][playerCol - 1] != 1) {
+                    movePlayer(playerRow + 1, playerCol - 1);
+                    return true;
                 }
-                case DOWN_RIGHT -> {
-                    if (playerRow < maze.getRows() - 1 && playerCol < maze.getColumns() - 1 &&
-                            maze.getMazeMatrix()[playerRow + 1][playerCol + 1] != 1) {
-                        movePlayer(playerRow + 1, playerCol + 1);
-                    }
+            }
+            case DOWN_RIGHT -> {
+                if (playerRow < maze.getRows() - 1 && playerCol < maze.getColumns() - 1 && maze.getMazeMatrix()[playerRow + 1][playerCol + 1] != 1) {
+                    movePlayer(playerRow + 1, playerCol + 1);
+                    return true;
                 }
             }
         }
 
+        return false;
     }
 
     private void movePlayer(int row, int col){
+        System.out.println("movePlayer called with: " + row + "," + col);
         this.playerRow = row;
         this.playerCol = col;
         setChanged();
         if (reachedGoal()) {
+            System.out.println("Player reached the goal at: " + row + "," + col);
             reachedGoal = true;
             notifyObservers("goal reached");
         } else {
             notifyObservers("player moved");
         }
     }
+
 
     @Override
     public int getPlayerRow() {
@@ -183,6 +193,14 @@ public class MyModel extends Observable implements IModel{
         return false;
     }
 
+    public void movePlayerTo(int row, int col) {
+        // בדוק חוקיות מיקום לפני העדכון (לא קיר וכו')
+        if(row >= 0 && row < maze.getRows() && col >= 0 && col < maze.getColumns()) {
+            if(maze.getMazeMatrix()[row][col] == 0) {
+                movePlayer(row, col);
+            }
+        }
+    }
 
 
 }

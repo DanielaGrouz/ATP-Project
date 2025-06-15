@@ -51,7 +51,7 @@ public class MyViewModel extends Observable implements Observer{
     }
 
     public void movePlayer(KeyEvent keyEvent){
-        MovementDirection direction;
+        MovementDirection direction = null;
         switch (keyEvent.getCode()){
             case UP, NUMPAD8, DIGIT8 -> direction = MovementDirection.UP;
             case DOWN, NUMPAD2, DIGIT2 -> direction = MovementDirection.DOWN;
@@ -66,11 +66,22 @@ public class MyViewModel extends Observable implements Observer{
                 return;
             }
         }
-        model.updatePlayerLocation(direction);
+        if (direction != null) {
+            model.updatePlayerLocation(direction);
+        }
     }
 
     public void solveMaze(){
         model.solveMaze();
     }
+
+    public void movePlayerTo(int row, int col) {
+        model.movePlayerTo(row, col);
+    }
+
+    public boolean movePlayer(MovementDirection direction) {
+        return model.updatePlayerLocation(direction);
+    }
+
 
 }

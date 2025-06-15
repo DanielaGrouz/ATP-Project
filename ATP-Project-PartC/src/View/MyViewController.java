@@ -1,5 +1,6 @@
 package View;
 
+import Model.MovementDirection;
 import ViewModel.MyViewModel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -39,6 +40,11 @@ public class MyViewController implements IView ,Observer, Initializable{
     StringProperty updateGoalRow = new SimpleStringProperty();
     StringProperty updateGoalCol = new SimpleStringProperty();
 
+    // דגל שמורה אם הגרירה פעילה
+    private boolean dragging = false;
+    private int dragPrevRow = -1;
+    private int dragPrevCol = -1;
+
     public String getUpdatePlayerRow() {
         return updatePlayerRow.get();
     }
@@ -70,14 +76,64 @@ public class MyViewController implements IView ,Observer, Initializable{
     public void setUpdateGoalCol(int updateGoalCol) {
         this.updateGoalCol.set(updateGoalCol + "");
     }
+
     @FXML
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        playerRow.textProperty().bind(updatePlayerRow);
-        playerCol.textProperty().bind(updatePlayerCol);
-        goalRow.textProperty().bind(updateGoalRow);
-        goalCol.textProperty().bind(updateGoalCol);
+        // ... קוד קודם ...
+
+        mazeDisplayer.setOnMousePressed(event -> {
+            dragging = true;
+
+            // שמור את המיקום ההתחלתי בעת לחיצה
+            dragPrevRow = viewModel.getPlayerRow();
+            dragPrevCol = viewModel.getPlayerCol();
+
+            event.consume();
+        });
+
+        mazeDisplayer.setOnMouseDragged(event -> {
+            if (!dragging) return;
+
+            int currentRow = dragPrevRow;
+            int currentCol = dragPrevCol;
+
+            int mouseRow = mazeDisplayer.getRowFromY(event.getY());
+            int mouseCol = mazeDisplayer.getColFromX(event.getX());
+
+            int dRow = mouseRow - currentRow;
+            int dCol = mouseCol - currentCol;
+
+            MovementDirection dir = null;
+
+            if (dRow == -1 && dCol == 0) dir = MovementDirection.UP;
+            else if (dRow == 1 && dCol == 0) dir = MovementDirection.DOWN;
+            else if (dRow == 0 && dCol == -1) dir = MovementDirection.LEFT;
+            else if (dRow == 0 && dCol == 1) dir = MovementDirection.RIGHT;
+            else if (dRow == -1 && dCol == -1) dir = MovementDirection.UP_LEFT;
+            else if (dRow == -1 && dCol == 1) dir = MovementDirection.UP_RIGHT;
+            else if (dRow == 1 && dCol == -1) dir = MovementDirection.DOWN_LEFT;
+            else if (dRow == 1 && dCol == 1) dir = MovementDirection.DOWN_RIGHT;
+
+            if (dir != null) {
+                boolean moved = viewModel.movePlayer(dir); // שים לב: צריך ש-movePlayer תחזיר boolean להצלחת המהלך
+                if (moved) {
+                    // עדכן את המיקום הקודם כדי לא לזוז יותר מפעם אחת לתא מסוים
+                    dragPrevRow = viewModel.getPlayerRow();
+                    dragPrevCol = viewModel.getPlayerCol();
+                }
+            }
+
+            event.consume();
+        });
+
+        mazeDisplayer.setOnMouseReleased(event -> {
+            dragging = false;
+            mazeDisplayer.requestFocus();
+            event.consume();
+        });
     }
+
 
     public void generateMaze(ActionEvent actionEvent) {
         int rows = Integer.valueOf(textField_mazeRows.getText());
@@ -119,10 +175,6 @@ public class MyViewController implements IView ,Observer, Initializable{
         setUpdateGoalCol(col);
     }
 
-    public void mouseClicked(MouseEvent mouseEvent) {
-        mazeDisplayer.requestFocus();
-    }
-
     @Override
     public void update(Observable o, Object arg) {
         String change = (String) arg;
@@ -140,6 +192,7 @@ public class MyViewController implements IView ,Observer, Initializable{
     }
 
     private void playerMoved() {
+        System.out.println("Player moved to: " + viewModel.getPlayerRow() + "," + viewModel.getPlayerCol());
         setPlayerPosition(viewModel.getPlayerRow(), viewModel.getPlayerCol());
     }
 
@@ -159,6 +212,41 @@ public class MyViewController implements IView ,Observer, Initializable{
         alert.showAndWait();
     }
 
+    public void mouseClicked(MouseEvent event) {
+        // 1. קבל את תא השורה והעמודה שנלחצו בעכבר
+        int clickedRow = mazeDisplayer.getRowFromY(event.getY());
+        int clickedCol = mazeDisplayer.getColFromX(event.getX());
+
+        // 2. קבל את מיקום השחקן הנוכחי
+        int currentRow = viewModel.getPlayerRow();
+        int currentCol = viewModel.getPlayerCol();
+
+        // 3. חשב הפרש בין הלחיצה למיקום הנוכחי
+        int dRow = clickedRow - currentRow;
+        int dCol = clickedCol - currentCol;
+
+        // 4. תרגם את ההפרש ל-MovementDirection
+        MovementDirection dir = null;
+
+        if (dRow == -1 && dCol == 0) dir = MovementDirection.UP;
+        else if (dRow == 1 && dCol == 0) dir = MovementDirection.DOWN;
+        else if (dRow == 0 && dCol == -1) dir = MovementDirection.LEFT;
+        else if (dRow == 0 && dCol == 1) dir = MovementDirection.RIGHT;
+        else if (dRow == -1 && dCol == -1) dir = MovementDirection.UP_LEFT;
+        else if (dRow == -1 && dCol == 1) dir = MovementDirection.UP_RIGHT;
+        else if (dRow == 1 && dCol == -1) dir = MovementDirection.DOWN_LEFT;
+        else if (dRow == 1 && dCol == 1) dir = MovementDirection.DOWN_RIGHT;
+
+        // 5. אם יש כיוון חוקי – תעדכן את המיקום
+        if (dir != null) {
+            viewModel.movePlayer(dir);
+        }
+
+        // 6. בקש פוקוס לעכבר על המאז
+        mazeDisplayer.requestFocus();
+
+        event.consume(); // עצור התפשטות האירוע אם צריך
+    }
 
 
 

@@ -14,11 +14,12 @@ public interface IModel {
     int getGoalRow();
     int getGoalCol();
 
-    void updatePlayerLocation(MovementDirection direction);
+    boolean updatePlayerLocation(MovementDirection direction);
     void assignObserver(Observer o);
     void solveMaze();
     Solution getSolution();
     boolean reachedGoal();
+    void movePlayerTo(int row, int col);
 //    public void setPlayerRow(int row);
 //    public void setPlayerCol(int col);
 }
