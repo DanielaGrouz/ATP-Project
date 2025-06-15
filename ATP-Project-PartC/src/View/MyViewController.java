@@ -40,7 +40,6 @@ public class MyViewController implements IView ,Observer, Initializable{
     StringProperty updateGoalRow = new SimpleStringProperty();
     StringProperty updateGoalCol = new SimpleStringProperty();
 
-    // דגל שמורה אם הגרירה פעילה
     private boolean dragging = false;
     private int dragPrevRow = -1;
     private int dragPrevCol = -1;
@@ -119,9 +118,8 @@ public class MyViewController implements IView ,Observer, Initializable{
             else if (dRow == 1 && dCol == 1) dir = MovementDirection.DOWN_RIGHT;
 
             if (dir != null) {
-                boolean moved = viewModel.movePlayer(dir); // שים לב: צריך ש-movePlayer תחזיר boolean להצלחת המהלך
+                boolean moved = viewModel.movePlayer(dir);
                 if (moved) {
-                    // עדכן את המיקום הקודם כדי לא לזוז יותר מפעם אחת לתא מסוים
                     dragPrevRow = viewModel.getPlayerRow();
                     dragPrevCol = viewModel.getPlayerCol();
                 }
@@ -158,7 +156,6 @@ public class MyViewController implements IView ,Observer, Initializable{
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Maze files (*.maze)", "*.maze"));
         fc.setInitialDirectory(new File("./resources"));
         File chosen = fc.showOpenDialog(null);
-        //...
     }
 
     public void keyPressed(KeyEvent keyEvent) {
@@ -216,19 +213,15 @@ public class MyViewController implements IView ,Observer, Initializable{
     }
 
     public void mouseClicked(MouseEvent event) {
-        // 1. קבל את תא השורה והעמודה שנלחצו בעכבר
         int clickedRow = mazeDisplayer.getRowFromY(event.getY());
         int clickedCol = mazeDisplayer.getColFromX(event.getX());
 
-        // 2. קבל את מיקום השחקן הנוכחי
         int currentRow = viewModel.getPlayerRow();
         int currentCol = viewModel.getPlayerCol();
 
-        // 3. חשב הפרש בין הלחיצה למיקום הנוכחי
         int dRow = clickedRow - currentRow;
         int dCol = clickedCol - currentCol;
 
-        // 4. תרגם את ההפרש ל-MovementDirection
         MovementDirection dir = null;
 
         if (dRow == -1 && dCol == 0) dir = MovementDirection.UP;
@@ -240,15 +233,13 @@ public class MyViewController implements IView ,Observer, Initializable{
         else if (dRow == 1 && dCol == -1) dir = MovementDirection.DOWN_LEFT;
         else if (dRow == 1 && dCol == 1) dir = MovementDirection.DOWN_RIGHT;
 
-        // 5. אם יש כיוון חוקי – תעדכן את המיקום
         if (dir != null) {
             viewModel.movePlayer(dir);
         }
 
-        // 6. בקש פוקוס לעכבר על המאז
         mazeDisplayer.requestFocus();
 
-        event.consume(); // עצור התפשטות האירוע אם צריך
+        event.consume();
     }
 
 
