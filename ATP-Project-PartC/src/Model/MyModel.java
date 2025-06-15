@@ -155,6 +155,7 @@ public class MyModel extends Observable implements IModel{
 
     @Override
     public void solveMaze() {
+        if (maze==null) return;
         try {
             Client client = new Client(InetAddress.getLocalHost(), 4001, (inFromServer, outToServer) -> {
                 try {

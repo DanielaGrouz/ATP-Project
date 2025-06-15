@@ -80,7 +80,10 @@ public class MyViewController implements IView ,Observer, Initializable{
     @FXML
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // ... קוד קודם ...
+        playerRow.textProperty().bind(updatePlayerRow);
+        playerCol.textProperty().bind(updatePlayerCol);
+        goalRow.textProperty().bind(updateGoalRow);
+        goalCol.textProperty().bind(updateGoalCol);
 
         mazeDisplayer.setOnMousePressed(event -> {
             dragging = true;
