@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ViewModel.MyViewModel;
-
+import javafx.scene.image.Image;
 
 public class main extends Application {
     @Override
@@ -21,6 +21,8 @@ public class main extends Application {
         MyViewController view = fxmlLoader.getController();
         view.setViewModel(viewModel);
         viewModel.addObserver(view);
+
+        primaryStage.getIcons().add(new Image("file:./ATP-Project-PartC/resources/images/icon.png"));
 
         primaryStage.setTitle("Maze Project");
         primaryStage.setScene(new Scene(root, 1000, 650));
