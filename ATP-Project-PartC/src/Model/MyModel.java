@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.util.Observable;
 import java.util.Observer;
 import algorithms.search.Solution;
+import javafx.scene.control.Alert;
 
 
 public class MyModel extends Observable implements IModel{
@@ -155,7 +156,14 @@ public class MyModel extends Observable implements IModel{
 
     @Override
     public void solveMaze() {
-        if (maze==null) return;
+        if (maze==null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("You must generate a maze before solving it.");
+            alert.showAndWait();
+            return;
+        }
         try {
             Client client = new Client(InetAddress.getLocalHost(), 4001, (inFromServer, outToServer) -> {
                 try {

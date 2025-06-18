@@ -15,7 +15,7 @@ public class main extends Application {
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MyView.fxml"));
         Parent root = fxmlLoader.load();
-
+        MyViewController myViewController = fxmlLoader.getController();
         IModel model = new MyModel();
         MyViewModel viewModel = new MyViewModel(model);
         MyViewController view = fxmlLoader.getController();
@@ -26,6 +26,9 @@ public class main extends Application {
 
         primaryStage.setTitle("Maze Project");
         primaryStage.setScene(new Scene(root, 1000, 650));
+        primaryStage.setOnCloseRequest(event -> {
+            myViewController.exit(null);
+        });
         primaryStage.show();
     }
 
