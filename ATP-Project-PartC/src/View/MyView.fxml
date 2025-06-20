@@ -124,7 +124,7 @@
             <content>
                 <MazeDisplayer fx:id="mazeDisplayer"
                                imageFileNamePlayer="./ATP-Project-PartC/resources/images/mario.jpg"
-                               imageFileNameGoal="./ATP-Project-PartC/resources/images/star.jpg"
+                               imageFileNameGoal="./ATP-Project-PartC/resources/images/star.png"
                                imageFileNameWall="./ATP-Project-PartC/resources/images/wall.png"
                                onKeyPressed="#keyPressed"
                 />

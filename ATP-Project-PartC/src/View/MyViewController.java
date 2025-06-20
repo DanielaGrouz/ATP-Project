@@ -6,12 +6,15 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -173,7 +176,7 @@ public class MyViewController implements IView ,Observer, Initializable{
         //
     }
 
-    public void exit(ActionEvent actionEvent) {
+    public void exit(Event event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm Exit");
         alert.setHeaderText(null);
@@ -186,6 +189,11 @@ public class MyViewController implements IView ,Observer, Initializable{
         if (result.isPresent() && result.get() == yes) {
             Platform.exit(); //close JavaFX Application Thread
             System.exit(0);
+        }
+        else {
+            if (event != null) {
+                event.consume();
+            }
         }
 
     }
@@ -210,6 +218,12 @@ public class MyViewController implements IView ,Observer, Initializable{
     @Override
     public void update(Observable o, Object arg) {
         String change = (String) arg;
+
+        if (change.startsWith("Error:")) {
+            UIUtils.showError(change.substring(6).trim());
+            return;
+        }
+
         switch (change){
             case "maze generated" -> mazeGenerated();
             case "player moved" -> playerMoved();
@@ -237,10 +251,19 @@ public class MyViewController implements IView ,Observer, Initializable{
     private void goalReached() {
         System.out.println(">> ViewController: Reached goal!");
         playerMoved();
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Congratulations!");
         alert.setHeaderText(null);
         alert.setContentText("You've reached the goal!");
+
+        //alert.getDialogPane().getStylesheets().add(getClass().getResource("/View/MainStyle.css").toExternalForm());
+        ImageView star = new ImageView(
+                new Image(getClass().getResource("/images/trophy.png").toExternalForm()));
+        star.setFitWidth(40);
+        star.setFitHeight(40);
+
+        alert.setGraphic(star);
         alert.showAndWait();
     }
 

@@ -343,24 +343,18 @@ public class MazeDisplayer extends Canvas {
     public void loadImagesOnce() {
         if (playerImg == null) {
             try { playerImg = new Image(new FileInputStream(getImageFileNamePlayer())); }
-            catch (FileNotFoundException e) { showError("Player image not found"); }
+            catch (FileNotFoundException e) { UIUtils.showError("Player image not found"); }
         }
         if (wallImg == null) {
             try { wallImg = new Image(new FileInputStream(getImageFileNameWall())); }
-            catch (FileNotFoundException e) { showError("Wall image not found"); }
+            catch (FileNotFoundException e) { UIUtils.showError("Wall image not found"); }
         }
         if (goalImg == null) {
             try { goalImg = new Image(new FileInputStream(getImageFileNameGoal())); }
-            catch (FileNotFoundException e) { showError("Goal image not found"); }
+            catch (FileNotFoundException e) { UIUtils.showError("Goal image not found"); }
         }
     }
 
 
-    private void showError(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
+
 }

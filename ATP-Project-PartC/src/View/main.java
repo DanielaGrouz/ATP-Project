@@ -26,9 +26,7 @@ public class main extends Application {
 
         primaryStage.setTitle("Maze Project");
         primaryStage.setScene(new Scene(root, 1000, 650));
-        primaryStage.setOnCloseRequest(event -> {
-            myViewController.exit(null);
-        });
+        primaryStage.setOnCloseRequest(myViewController::exit);
         primaryStage.show();
     }
 

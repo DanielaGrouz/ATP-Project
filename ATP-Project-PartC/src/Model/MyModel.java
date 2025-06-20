@@ -15,7 +15,6 @@ import java.net.InetAddress;
 import java.util.Observable;
 import java.util.Observer;
 import algorithms.search.Solution;
-import javafx.scene.control.Alert;
 
 
 public class MyModel extends Observable implements IModel{
@@ -45,7 +44,7 @@ public class MyModel extends Observable implements IModel{
         solution=null;
         setChanged();
         notifyObservers("maze generated");
-        // start position:
+        //start position:
         movePlayer(maze.getStartPosition().getRowIndex(), maze.getStartPosition().getColumnIndex());
     }
 
@@ -157,11 +156,7 @@ public class MyModel extends Observable implements IModel{
     @Override
     public void solveMaze() {
         if (maze==null){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("You must generate a maze before solving it.");
-            alert.showAndWait();
+            notifyObservers("Error:You must generate a maze before solving it.");
             return;
         }
         try {
@@ -178,14 +173,14 @@ public class MyModel extends Observable implements IModel{
                     setChanged();
                     notifyObservers("maze solved");
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    notifyObservers("Error:" + e.getMessage());
                 }
             });
 
             client.communicateWithServer();
 
         } catch (Exception e) {
-
+            notifyObservers("Error" + e.getMessage());
         }
     }
 
@@ -202,6 +197,7 @@ public class MyModel extends Observable implements IModel{
         return false;
     }
 
+    @Override
     public void movePlayerTo(int row, int col) {
         if(row >= 0 && row < maze.getRows() && col >= 0 && col < maze.getColumns()) {
             if(maze.getMazeMatrix()[row][col] == 0) {
