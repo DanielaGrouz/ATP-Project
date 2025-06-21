@@ -1,6 +1,6 @@
-/*.root {
-    -fx-background-color: bisque;
-}*/
+.root {
+    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #ffffff);
+}
 
 Button {
     -fx-text-fill: white;
@@ -19,3 +19,13 @@ Button:hover {
     -fx-alignment: CENTER;
     -fx-content-display: LEFT;
 }
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #90caf9;
+    -fx-background-radius: 10;
+}
+

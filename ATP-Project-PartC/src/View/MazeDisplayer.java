@@ -144,7 +144,7 @@ public class MazeDisplayer extends Canvas {
 
     public void drawMaze(Maze maze) {
         this.maze = maze;
-        solution=null;
+        solution = null;
         updateCanvasSize();
         draw();
     }
@@ -195,12 +195,6 @@ public class MazeDisplayer extends Canvas {
 
     private void drawMazeWalls(GraphicsContext graphicsContext, double cellHeight, double cellWidth, int rows, int cols) {
         graphicsContext.setFill(Color.RED);
-//        Image wallImage = null;
-//        try {
-//            wallImage = new Image(new FileInputStream(getImageFileNameWall()));
-//        } catch (FileNotFoundException e) {
-//            System.out.println("There is no wall image file");
-//        }
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -221,17 +215,6 @@ public class MazeDisplayer extends Canvas {
 
         if (playerImg == null) graphicsContext.fillRect(x,y,cellWidth, cellHeight);
         else graphicsContext.drawImage(playerImg,x,y,cellWidth, cellHeight);
-
-//        Image playerImage = null;
-//        try {
-//            playerImage = new Image(new FileInputStream(getImageFileNamePlayer()));
-//        } catch (FileNotFoundException e) {
-//            showError("Error: There is no player image file");
-//        }
-//        if (playerImage == null)
-//            graphicsContext.fillRect(x, y, cellWidth, cellHeight);
-//        else
-//            graphicsContext.drawImage(playerImage, x, y, cellWidth, cellHeight);
    }
 
     private void drawMazeGoal(GraphicsContext graphicsContext, double cellHeight, double cellWidth) {
@@ -241,18 +224,6 @@ public class MazeDisplayer extends Canvas {
 
         if (goalImg == null) graphicsContext.fillRect(x,y,cellWidth, cellHeight);
         else graphicsContext.drawImage(goalImg,x,y,cellWidth, cellHeight);
-
-//        Image goalImage = null;
-//        try {
-//            goalImage = new Image(new FileInputStream(getImageFileNameGoal()));
-//        } catch (FileNotFoundException e) {
-//            showError("Error: There is no goal image");
-//        }
-//        if (goalImage == null) {
-//            graphicsContext.fillRect(x, y, cellWidth, cellHeight);
-//        } else {
-//            graphicsContext.drawImage(goalImage, x, y, cellWidth, cellHeight);
-//        }
     }
 
 

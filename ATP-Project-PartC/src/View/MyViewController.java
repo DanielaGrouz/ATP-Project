@@ -19,6 +19,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Observable;
@@ -45,6 +48,9 @@ public class MyViewController implements IView ,Observer, Initializable{
     StringProperty updatePlayerCol = new SimpleStringProperty();
     StringProperty updateGoalRow = new SimpleStringProperty();
     StringProperty updateGoalCol = new SimpleStringProperty();
+
+    private MediaPlayer backgroundMusic;
+    private MediaPlayer winMusic;
 
     private boolean dragging = false;
     private int dragPrevRow = -1;
@@ -146,13 +152,13 @@ public class MyViewController implements IView ,Observer, Initializable{
         int rows = Integer.valueOf(textField_mazeRows.getText());
         int cols = Integer.valueOf(textField_mazeColumns.getText());
         mazeDisplayer.loadImagesOnce();
+        if (rows<2 || cols<2)
+            UIUtils.showInfo("The number of rows and columns must be at least 2. A default 10x10 maze is created.");
         viewModel.generateMaze(rows, cols);
+        playBackgroundMusic();
     }
 
     public void solveMaze(ActionEvent actionEvent) {
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setContentText("Solving maze...");
-//        alert.show();
         viewModel.solveMaze();
     }
 
@@ -234,6 +240,7 @@ public class MyViewController implements IView ,Observer, Initializable{
     }
 
     private void mazeSolved() {
+        //UIUtils.showInfo("Solving maze...");
         mazeDisplayer.setSolution(viewModel.getSolution());
     }
 
@@ -252,16 +259,27 @@ public class MyViewController implements IView ,Observer, Initializable{
         System.out.println(">> ViewController: Reached goal!");
         playerMoved();
 
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+        }
+        URL url = getClass().getResource("/sounds/MarioWin.mp3");
+        if (url == null) {
+            UIUtils.showError("Win music not found!");
+            return;
+        }
+        String path = url.toExternalForm();
+        Media media = new Media(path);
+        winMusic = new MediaPlayer(media);
+        winMusic.play();
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Congratulations!");
         alert.setHeaderText(null);
         alert.setContentText("You've reached the goal!");
 
-        //alert.getDialogPane().getStylesheets().add(getClass().getResource("/View/MainStyle.css").toExternalForm());
-        ImageView star = new ImageView(
-                new Image(getClass().getResource("/images/trophy.png").toExternalForm()));
-        star.setFitWidth(40);
-        star.setFitHeight(40);
+        ImageView star = new ImageView(new Image(getClass().getResource("/images/trophy.png").toExternalForm()));
+        star.setFitWidth(60);
+        star.setFitHeight(60);
 
         alert.setGraphic(star);
         alert.showAndWait();
@@ -299,7 +317,29 @@ public class MyViewController implements IView ,Observer, Initializable{
     }
 
 
+    private void playBackgroundMusic() {
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
+        }
 
+        if (winMusic != null) {
+            winMusic.stop();
+            winMusic.dispose();
+        }
+
+        URL url = getClass().getResource("/sounds/MarioBackground.mp3");
+        if (url == null) {
+            UIUtils.showError("Background music not found!");
+            return;
+        }
+
+        String path = url.toExternalForm();
+        Media media = new Media(path);
+        backgroundMusic = new MediaPlayer(media);
+        backgroundMusic.setCycleCount(MediaPlayer.INDEFINITE);
+        backgroundMusic.play();
+    }
 
 
 }

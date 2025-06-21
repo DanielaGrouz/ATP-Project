@@ -156,7 +156,8 @@ public class MyModel extends Observable implements IModel{
     @Override
     public void solveMaze() {
         if (maze==null){
-            notifyObservers("Error:You must generate a maze before solving it.");
+            setChanged();
+            notifyObservers("Error: You must generate a maze before solving it.");
             return;
         }
         try {
@@ -173,6 +174,7 @@ public class MyModel extends Observable implements IModel{
                     setChanged();
                     notifyObservers("maze solved");
                 } catch (Exception e) {
+                    setChanged();
                     notifyObservers("Error:" + e.getMessage());
                 }
             });
@@ -180,6 +182,7 @@ public class MyModel extends Observable implements IModel{
             client.communicateWithServer();
 
         } catch (Exception e) {
+            setChanged();
             notifyObservers("Error" + e.getMessage());
         }
     }
