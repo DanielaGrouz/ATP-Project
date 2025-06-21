@@ -20,6 +20,13 @@ Button:hover {
     -fx-content-display: LEFT;
 }
 
+.button:disabled {
+    -fx-background-color: #dddddd;
+    -fx-text-fill: gray;
+    -fx-opacity: 0.95;
+    -fx-cursor: default;
+}
+
 .scroll-bar:vertical {
     -fx-background-color: transparent;
 }
@@ -29,3 +36,6 @@ Button:hover {
     -fx-background-radius: 10;
 }
 
+.menu-item:hover {
+    -fx-background-color: #1abc9c;
+}

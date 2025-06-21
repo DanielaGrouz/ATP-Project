@@ -5,6 +5,7 @@ import algorithms.mazeGenerators.Maze;
 import algorithms.search.Solution;
 import javafx.scene.input.KeyEvent;
 
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -83,5 +84,20 @@ public class MyViewModel extends Observable implements Observer{
         return model.updatePlayerLocation(direction);
     }
 
+    public void exit(){
+        model.exit();
+    }
+
+    public void saveMaze(File file) {
+        model.saveMaze(file);
+    }
+
+    public void openMaze(File file) {
+        model.openMaze(file);
+    }
+
+    public void restartMaze() {
+        model.restartMaze();
+    }
 
 }

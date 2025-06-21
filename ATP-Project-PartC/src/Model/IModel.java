@@ -1,5 +1,6 @@
 package Model;
 
+import java.io.File;
 import java.util.Observer;
 import algorithms.mazeGenerators.Maze;
 import algorithms.search.Solution;
@@ -22,4 +23,8 @@ public interface IModel {
     void movePlayerTo(int row, int col);
 //    public void setPlayerRow(int row);
 //    public void setPlayerCol(int col);
+    void restartMaze();
+    void exit();
+    void saveMaze(File file);
+    void openMaze(File file);
 }

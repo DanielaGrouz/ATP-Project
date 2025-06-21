@@ -2,15 +2,14 @@ package Model;
 
 import Client.IClientStrategy;
 import Client.Client;
+import IO.MyDecompressorInputStream;
 import Server.Server;
 import Server.ServerStrategySolveSearchProblem;
+import Server.ServerStrategyGenerateMaze;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.util.Observable;
 import java.util.Observer;
@@ -40,12 +39,19 @@ public class MyModel extends Observable implements IModel{
         maze = generator.generate(rows, cols);
         goalRow=maze.getGoalPosition().getRowIndex();
         goalCol=maze.getGoalPosition().getColumnIndex();
-        reachedGoal = false;
         solution=null;
         setChanged();
         notifyObservers("maze generated");
         //start position:
+        restartMaze();
+    }
+
+    @Override
+    public void restartMaze(){
         movePlayer(maze.getStartPosition().getRowIndex(), maze.getStartPosition().getColumnIndex());
+        reachedGoal=false;
+        setChanged();
+        notifyObservers("player moved");
     }
 
     @Override
@@ -155,11 +161,11 @@ public class MyModel extends Observable implements IModel{
 
     @Override
     public void solveMaze() {
-        if (maze==null){
-            setChanged();
-            notifyObservers("Error: You must generate a maze before solving it.");
-            return;
-        }
+//        if (maze==null){
+//            setChanged();
+//            notifyObservers("Error: You must generate a maze before solving it.");
+//            return;
+//        }
         try {
             Client client = new Client(InetAddress.getLocalHost(), 4001, (inFromServer, outToServer) -> {
                 try {
@@ -206,6 +212,49 @@ public class MyModel extends Observable implements IModel{
             if(maze.getMazeMatrix()[row][col] == 0) {
                 movePlayer(row, col);
             }
+        }
+    }
+
+    @Override
+    public void exit(){
+        solveSearchProblemServer.stop();
+    }
+
+    @Override
+    public void saveMaze(File file) {
+        if (maze == null) {
+            setChanged();
+            notifyObservers("Error: No maze to save. Please generate a maze first.");
+            return;
+        }
+
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+            out.writeObject(maze);
+            out.writeInt(playerRow);
+            out.writeInt(playerCol);
+        }
+        catch (Exception e) {
+            setChanged();
+            notifyObservers("Error" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void openMaze(File file) {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+            maze = (Maze) in.readObject();
+            playerRow = in.readInt();
+            playerCol = in.readInt();
+            movePlayer(playerRow, playerCol);
+            goalRow=maze.getGoalPosition().getRowIndex();
+            goalCol=maze.getGoalPosition().getColumnIndex();
+            this.solution = null;
+            this.reachedGoal = (goalRow==playerRow && goalCol==playerCol);
+            setChanged();
+            notifyObservers("maze loaded");
+        } catch (Exception e) {
+            setChanged();
+            notifyObservers("Error: " + e.getMessage());
         }
     }
 
