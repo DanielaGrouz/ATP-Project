@@ -14,8 +14,12 @@ public class MyMazeGenerator extends AMazeGenerator {
      */
     @Override
     public Maze generate(int rows, int columns) {
+//        if (rows <= 1 || columns <= 1) {
+//            return defaultMaze();
+//        }
         if (rows <= 1 || columns <= 1) {
-            return defaultMaze();
+            rows=10;
+            columns=10;
         }
 
         Maze wallMaze = new Maze(rows, columns);
