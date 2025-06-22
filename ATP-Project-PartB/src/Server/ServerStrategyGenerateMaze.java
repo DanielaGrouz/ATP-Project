@@ -1,5 +1,6 @@
 package Server;
 
+import IO.MyCompressorOutputStream;
 import IO.SimpleCompressorOutputStream;
 import algorithms.mazeGenerators.*;
 
@@ -29,6 +30,7 @@ public class ServerStrategyGenerateMaze implements IServerStrategy{
             int[] mazeDimensions = (int[]) fromClient.readObject();
             System.out.println("Received dimensions");
             String mazeGeneratingAlgorithm = configurations.get("mazeGeneratingAlgorithm");
+            String mazeCompressor = configurations.get("mazeCompressor");
             IMazeGenerator generator;
             if (mazeGeneratingAlgorithm.equals("MyMazeGenerator")){
                 generator = new MyMazeGenerator();
@@ -45,9 +47,26 @@ public class ServerStrategyGenerateMaze implements IServerStrategy{
             }
             Maze maze = generator.generate(mazeDimensions[0], mazeDimensions[1]);
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            SimpleCompressorOutputStream compressor = new SimpleCompressorOutputStream(byteOut); //change to myCompressor
-            compressor.write(maze.toByteArray());
-            compressor.close();
+
+
+            if (mazeCompressor.equals("SimpleCompressorOutputStream")){
+                SimpleCompressorOutputStream compressor;
+                compressor = new SimpleCompressorOutputStream(byteOut);
+                compressor.write(maze.toByteArray());
+                compressor.close();
+            }
+            else if (mazeCompressor.equals("MyCompressorOutputStream")){
+                MyCompressorOutputStream compressor;
+                compressor = new MyCompressorOutputStream(byteOut);
+                compressor.write(maze.toByteArray());
+                compressor.close();
+            }else {
+                SimpleCompressorOutputStream compressor;
+                System.out.println("not found mazeCompressor for value " + mazeCompressor);
+                compressor = new SimpleCompressorOutputStream(byteOut); // simple compressor is the default choice
+                compressor.write(maze.toByteArray());
+                compressor.close();
+            }
 
             byte[] compressedData = byteOut.toByteArray();
             //send the solution back to the client and close streams
