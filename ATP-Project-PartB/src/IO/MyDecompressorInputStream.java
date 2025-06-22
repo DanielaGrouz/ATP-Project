@@ -54,24 +54,20 @@ public class MyDecompressorInputStream extends InputStream {
         final int HEADER_SIZE = 20;                 // 5 ints × 4-bytes
         ArrayList<Byte> byteArray = new ArrayList<>(HEADER_SIZE);
 
-        /* 1. קוראים את הכותרת כפי שהיא ומעתיקים ל-byteArray */
         byte[] header = new byte[HEADER_SIZE];
         if (in.read(header) != HEADER_SIZE)
             throw new IOException("Header too short");
         for (byte b : header)
             byteArray.add(b);
 
-        /* 2. שולפים rows (עמדה 16-19) – columns לא נמצא בכותרת */
         int rows = ByteBuffer.wrap(header).getInt(16);
 
-        /* 3. מפענחים את גוף הקובץ בביט-פאקינג עד EOF */
         int currentByte;
         while ((currentByte = in.read()) != -1) {
             for (int bit = 7; bit >= 0; bit--)
                 byteArray.add((byte) ((currentByte >> bit) & 1));
         }
 
-        /* 4. מסיימים */
         this.matrix = byteArray;
     }
 
