@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -60,6 +61,7 @@ public class MyViewController implements IView ,Observer, Initializable{
     private MediaPlayer backgroundMusic = null;
     private MediaPlayer winMusic = null;
 
+    private boolean isDarkMode = false;
     private boolean dragging = false;
     private int dragPrevRow = -1;
     private int dragPrevCol = -1;
@@ -161,16 +163,22 @@ public class MyViewController implements IView ,Observer, Initializable{
 
 
     public void generateMaze(ActionEvent actionEvent) {
-        int rows = Integer.valueOf(textField_mazeRows.getText());
-        int cols = Integer.valueOf(textField_mazeColumns.getText());
-        mazeDisplayer.loadImagesOnce();
-        if (rows<2 || cols<2){
-            UIUtils.showInfo("The number of rows and columns must be at least 2. A default 10x10 maze is created.");
-            viewModel.generateMaze(10, 10);
+        try {
+            int rows = Integer.valueOf(textField_mazeRows.getText());
+            int cols = Integer.valueOf(textField_mazeColumns.getText());
+            mazeDisplayer.loadImagesOnce();
+            if (rows<2 || cols<2){
+                UIUtils.showInfo("The number of rows and columns must be at least 2. A default 10x10 maze is created.");
+                viewModel.generateMaze(10, 10);
+            }
+            else {
+                viewModel.generateMaze(rows, cols);
+            }
         }
-        else {
-            viewModel.generateMaze(rows, cols);
+        catch (Exception e){
+            UIUtils.showError("Please enter whole numbers only in the rows and columns fields.");
         }
+
     }
 
     public void solveMaze(ActionEvent actionEvent) {
@@ -217,8 +225,79 @@ public class MyViewController implements IView ,Observer, Initializable{
     }
 
     public void newFile(ActionEvent actionEvent) {
-        //
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("New Maze File");
+        alert.setHeaderText("Create a new empty maze?");
+        alert.setContentText("This will clear the current maze. Unsaved work will be lost.");
+
+        ButtonType yes = new ButtonType("Yes");
+        ButtonType no = new ButtonType("No");
+        alert.getButtonTypes().setAll(yes, no);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isEmpty() || result.get() != yes) {
+            actionEvent.consume();
+            return;
+        }
+
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Create New Maze File");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Maze files (*.txt)", "*.txt"));
+        fc.setInitialDirectory(new File("./ATP-Project-PartC/resources"));
+        fc.setInitialFileName("newMaze.txt");
+
+        TextField rowsInput = new TextField("10");
+        TextField colsInput = new TextField("10");
+
+        GridPane inputGrid = new GridPane();
+        inputGrid.setHgap(10);
+        inputGrid.setVgap(10);
+        inputGrid.add(new Label("Rows:"), 0, 0);
+        inputGrid.add(rowsInput, 1, 0);
+        inputGrid.add(new Label("Columns:"), 0, 1);
+        inputGrid.add(colsInput, 1, 1);
+
+        Alert inputDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        inputDialog.setTitle("Maze Size");
+        inputDialog.setHeaderText("Enter number of rows and columns");
+        inputDialog.getDialogPane().setContent(inputGrid);
+        Optional<ButtonType> sizeResult = inputDialog.showAndWait();
+
+        if (sizeResult.isEmpty() || sizeResult.get() != ButtonType.OK)
+            return;
+
+        try {
+            int rows = Integer.parseInt(rowsInput.getText());
+            int cols = Integer.parseInt(colsInput.getText());
+            if (rows < 2 || cols < 2) {
+                UIUtils.showError("Maze size must be at least 2x2.");
+                return;
+            }
+            if (backgroundMusic != null) {
+                backgroundMusic.stop();
+            }
+            if (winMusic != null) {
+                winMusic.stop();
+            }
+
+            File file = fc.showSaveDialog(null);
+            if (file != null) {
+                if (!file.getName().toLowerCase().endsWith(".txt")) {
+                    file = new File(file.getAbsolutePath() + ".txt");
+                }
+
+                mazeDisplayer.loadImagesOnce();
+                viewModel.generateMaze(rows, cols);
+                viewModel.saveMaze(file);
+                UIUtils.showInfo("New maze created and saved to: " + file.getName());
+            }
+        } catch (NumberFormatException e) {
+            UIUtils.showError("Rows and columns must be whole numbers.");
+        } catch (Exception e) {
+            UIUtils.showError("Failed to create new file: " + e.getMessage());
+        }
     }
+
 
     public void properties(ActionEvent actionEvent) {
         Properties props = loadProperties();
@@ -315,7 +394,6 @@ public class MyViewController implements IView ,Observer, Initializable{
     private void goalReached() {
         System.out.println(">> ViewController: Reached goal!");
         playerMoved();
-
         playWinMusic();
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -462,6 +540,12 @@ public class MyViewController implements IView ,Observer, Initializable{
         - 🚶 Player: Your current location (Mario).
         - 🎯 Goal: The target to reach.
 
+        ▶ File Options:
+        - 🆕 New: Create a new maze and save it to a new file.
+        - 📂 Load: Load a saved maze from file.
+        - 💾 Save: Save the current maze (including the player's current position).
+        - ⚙ Generate Maze: Generate a new maze in memory without saving a file.
+        
         ▶ Additional:
         - Press 'Solve Maze' to display the shortest path.
         - The solution path will be shown in green.
@@ -470,6 +554,7 @@ public class MyViewController implements IView ,Observer, Initializable{
         Good luck! 🍄
         """;
 
+        alert.getDialogPane().setMinWidth(500);
         alert.setContentText(helpText);
         alert.showAndWait();
     }
@@ -488,7 +573,7 @@ public class MyViewController implements IView ,Observer, Initializable{
             - Prim's Algorithm
 
             🧠 Maze Solving Algorithm:
-            - Best First Search
+            - Best First Search (set in config file)
 
             🧪 Technologies:
             - JavaFX
@@ -501,21 +586,21 @@ public class MyViewController implements IView ,Observer, Initializable{
             - Dynamic resizing
 
             💡 Motivation:
-            This game was created as part of a university course on 
-            Advanced Programming, aiming to combine algorithms, UI 
-            and software design into one interactive experience.
+            This game was created as part of a university course on Advanced Programming,
+            aiming to combine algorithms, UI and software design into one interactive experience.
             
             Thank you for playing! 👏
             """;
 
+        alert.getDialogPane().setMinWidth(500);
         alert.setContentText(content);
         alert.showAndWait();
     }
 
     @FXML
     public void settings() {
-        Label title = new Label("Settings");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        Label title = new Label("Settings \uD83D\uDEE0");
+        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         //volume
         Label volumeLabel = new Label("Music Volume:");
@@ -534,26 +619,30 @@ public class MyViewController implements IView ,Observer, Initializable{
 
         //dark mode
         CheckBox darkMode = new CheckBox("Enable Dark Mode");
-        darkMode.setSelected(mainPane.getStylesheets().contains("/dark.css"));
+        darkMode.setSelected(isDarkMode);
 
         darkMode.setOnAction(e -> {
             if (darkMode.isSelected()) {
+                isDarkMode = true;
                 if (!mainPane.getStyleClass().contains("dark"))
                     mainPane.getStyleClass().add("dark");
             } else {
+                isDarkMode = false;
                 mainPane.getStyleClass().remove("dark");
             }
         });
 
+        //close button
         Button closeButton = new Button("Close");
+        closeButton.setPrefWidth(100);
+        closeButton.setStyle("-fx-background-radius: 8; -fx-padding: 6 12;");
         closeButton.setOnAction(e -> ((Stage) closeButton.getScene().getWindow()).close());
 
-        // סידור בעמודה
         VBox layout = new VBox(15, title, new HBox(10, volumeLabel, volumeSlider), darkMode, closeButton);
         layout.setPadding(new Insets(20));
         layout.setAlignment(Pos.CENTER);
 
-        // יצירת חלון חדש
+        //open settings window
         Stage settingsStage = new Stage();
         settingsStage.setTitle("Settings");
         settingsStage.setScene(new Scene(layout, 300, 200));

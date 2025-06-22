@@ -2,9 +2,12 @@ package Model;
 
 import Client.IClientStrategy;
 import Client.Client;
+import IO.MyCompressorOutputStream;
 import IO.MyDecompressorInputStream;
+import IO.SimpleCompressorOutputStream;
 import IO.SimpleDecompressorInputStream;
 import Server.Server;
+import Server.Configurations;
 import Server.ServerStrategySolveSearchProblem;
 import Server.ServerStrategyGenerateMaze;
 import algorithms.mazeGenerators.Maze;
@@ -70,7 +73,18 @@ public class MyModel extends Observable implements IModel{
 
                     ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                     byte[] compressedMaze = (byte[])fromServer.readObject();
-                    InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
+                    Configurations configurations = Configurations.getInstance();
+                    String mazeCompressor = configurations.get("mazeCompressor");
+                    InputStream is;
+                    if (mazeCompressor.equals("SimpleCompressorOutputStream")) {
+                        is = new SimpleDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
+                    } else if (mazeCompressor.equals("MyCompressorOutputStream")) {
+                        is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
+
+                    } else {
+                        System.out.println("not found mazeCompressor for value " + mazeCompressor);
+                        is = new SimpleDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
+                    }
                     byte[] decompressedMaze = new byte[rows*cols + 20];
                     is.read(decompressedMaze);
                     maze = new Maze(decompressedMaze);
