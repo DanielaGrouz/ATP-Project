@@ -3,6 +3,7 @@ package Model;
 import Client.IClientStrategy;
 import Client.Client;
 import IO.MyDecompressorInputStream;
+import IO.SimpleDecompressorInputStream;
 import Server.Server;
 import Server.ServerStrategySolveSearchProblem;
 import Server.ServerStrategyGenerateMaze;

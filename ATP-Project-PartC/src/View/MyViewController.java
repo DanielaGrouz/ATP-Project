@@ -164,11 +164,13 @@ public class MyViewController implements IView ,Observer, Initializable{
         int rows = Integer.valueOf(textField_mazeRows.getText());
         int cols = Integer.valueOf(textField_mazeColumns.getText());
         mazeDisplayer.loadImagesOnce();
-        if (rows<2 || cols<2)
+        if (rows<2 || cols<2){
             UIUtils.showInfo("The number of rows and columns must be at least 2. A default 10x10 maze is created.");
-        viewModel.generateMaze(rows, cols);
-
-
+            viewModel.generateMaze(10, 10);
+        }
+        else {
+            viewModel.generateMaze(rows, cols);
+        }
     }
 
     public void solveMaze(ActionEvent actionEvent) {
