@@ -39,3 +39,9 @@ Button:hover {
 .menu-item:hover {
     -fx-background-color: #1abc9c;
 }
+
+.dark {
+    -fx-base: #202020;
+    -fx-background-color: #202020;
+    -fx-text-fill: #eeeeee;
+}

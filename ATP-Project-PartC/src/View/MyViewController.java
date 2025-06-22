@@ -9,15 +9,23 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +50,8 @@ public class MyViewController implements IView ,Observer, Initializable{
     public Label goalCol;
     public Button solveButton;
     public Button restartButton;
+    public BorderPane mainPane;
+
     StringProperty updatePlayerRow = new SimpleStringProperty();
     StringProperty updatePlayerCol = new SimpleStringProperty();
     StringProperty updateGoalRow = new SimpleStringProperty();
@@ -95,6 +105,9 @@ public class MyViewController implements IView ,Observer, Initializable{
         goalCol.textProperty().bind(updateGoalCol);
         solveButton.setDisable(true);
         restartButton.setDisable(true);
+
+        initializeBackgroundMusic();
+        initializeWinMusic();
 
         mazeDisplayer.setOnMousePressed(event -> {
             dragging = true;
@@ -301,29 +314,7 @@ public class MyViewController implements IView ,Observer, Initializable{
         System.out.println(">> ViewController: Reached goal!");
         playerMoved();
 
-        try {
-            if (backgroundMusic != null && backgroundMusic.getStatus() != MediaPlayer.Status.DISPOSED) {
-                backgroundMusic.stop();
-                backgroundMusic.dispose();
-                backgroundMusic=null;
-            }
-
-            URL url = getClass().getResource("/sounds/MarioWin.mp3");
-            if (url == null) {
-                UIUtils.showError("Win music not found!");
-                return;
-            }
-
-            String path = url.toExternalForm();
-            Media media = new Media(path);
-            winMusic = new MediaPlayer(media);
-            winMusic.setOnReady(() -> {
-                winMusic.play();
-            });
-
-        } catch (Exception e) {
-            UIUtils.showError("Error playing win music: " + e.getMessage());
-        }
+        playWinMusic();
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Congratulations!");
@@ -375,21 +366,10 @@ public class MyViewController implements IView ,Observer, Initializable{
         event.consume();
     }
 
+    private void initializeBackgroundMusic() {
+        if (backgroundMusic != null) return;
 
-    private void playBackgroundMusic() {
         try {
-            if (backgroundMusic != null && backgroundMusic.getStatus() != MediaPlayer.Status.DISPOSED) {
-                backgroundMusic.stop();
-                backgroundMusic.dispose();
-                backgroundMusic=null;
-            }
-
-            if (winMusic != null && winMusic.getStatus() != MediaPlayer.Status.DISPOSED) {
-                winMusic.stop();
-                winMusic.dispose();
-                winMusic=null;
-            }
-
             URL url = getClass().getResource("/sounds/MarioBackground.mp3");
             if (url == null) {
                 UIUtils.showError("Background music not found!");
@@ -399,14 +379,52 @@ public class MyViewController implements IView ,Observer, Initializable{
             String path = url.toExternalForm();
             Media media = new Media(path);
             backgroundMusic = new MediaPlayer(media);
-            backgroundMusic.setOnReady(() -> {
-                backgroundMusic.setCycleCount(MediaPlayer.INDEFINITE);
-                backgroundMusic.play();
-            });
+            backgroundMusic.setCycleCount(MediaPlayer.INDEFINITE);
+
         } catch (Exception e) {
-            UIUtils.showError("Error playing background music: " + e.getMessage());
+            UIUtils.showError("Error initializing background music: " + e.getMessage());
+        }
+    }
+
+    private void initializeWinMusic() {
+        if (winMusic != null) return;
+
+        try {
+            URL url = getClass().getResource("/sounds/MarioWin.mp3");
+            if (url == null) {
+                UIUtils.showError("Win music not found!");
+                return;
+            }
+            String path = url.toExternalForm();
+            Media media = new Media(path);
+            winMusic = new MediaPlayer(media);
+            winMusic.setOnEndOfMedia(() -> winMusic.stop());
+        } catch (Exception e) {
+            UIUtils.showError("Error initializing win music: " + e.getMessage());
+        }
+    }
+
+    private void playBackgroundMusic() {
+        if (winMusic != null) {
+            winMusic.stop();
         }
 
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.play();
+        }
+    }
+
+    private void playWinMusic() {
+        initializeWinMusic();
+        if (winMusic == null) return;
+
+        // עצור מוזיקת רקע אם מתנגנת
+        if (backgroundMusic != null && backgroundMusic.getStatus() == MediaPlayer.Status.PLAYING)
+            backgroundMusic.stop();
+
+        winMusic.stop();
+        winMusic.play();
     }
 
     private Properties loadProperties() {
@@ -490,6 +508,55 @@ public class MyViewController implements IView ,Observer, Initializable{
 
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    public void settings() {
+        Label title = new Label("Settings");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        //volume
+        Label volumeLabel = new Label("Music Volume:");
+        Slider volumeSlider = new Slider(0, 100, 60);
+        volumeSlider.setShowTickLabels(true);
+        volumeSlider.setShowTickMarks(true);
+        if (backgroundMusic != null)
+            volumeSlider.setValue(backgroundMusic.getVolume() * 100);
+        if (winMusic != null)
+            volumeSlider.setValue(winMusic.getVolume() * 100);
+        volumeSlider.valueProperty().addListener((obs, o, n) -> {
+            double v = n.doubleValue() / 100.0;
+            if (backgroundMusic != null) backgroundMusic.setVolume(v);
+            if (winMusic != null)        winMusic.setVolume(v);
+        });
+
+        //dark mode
+        CheckBox darkMode = new CheckBox("Enable Dark Mode");
+        darkMode.setSelected(mainPane.getStylesheets().contains("/dark.css"));
+
+        darkMode.setOnAction(e -> {
+            if (darkMode.isSelected()) {
+                if (!mainPane.getStyleClass().contains("dark"))
+                    mainPane.getStyleClass().add("dark");
+            } else {
+                mainPane.getStyleClass().remove("dark");
+            }
+        });
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(e -> ((Stage) closeButton.getScene().getWindow()).close());
+
+        // סידור בעמודה
+        VBox layout = new VBox(15, title, new HBox(10, volumeLabel, volumeSlider), darkMode, closeButton);
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.CENTER);
+
+        // יצירת חלון חדש
+        Stage settingsStage = new Stage();
+        settingsStage.setTitle("Settings");
+        settingsStage.setScene(new Scene(layout, 300, 200));
+        settingsStage.initModality(Modality.APPLICATION_MODAL); // חוסם את החלון הראשי
+        settingsStage.show();
     }
 
 

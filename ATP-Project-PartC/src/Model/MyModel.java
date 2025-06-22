@@ -26,25 +26,72 @@ public class MyModel extends Observable implements IModel{
     private int goalCol;
     private boolean reachedGoal;
     Server solveSearchProblemServer; //the server that solves the maze
-
+    Server mazeGeneratingServer; //the server that generate the maze
 
     public MyModel() {
         generator = new MyMazeGenerator();
         solveSearchProblemServer = new Server(4001, 1000, new ServerStrategySolveSearchProblem());
         solveSearchProblemServer.start();
+        mazeGeneratingServer = new Server(4002, 1000, new ServerStrategyGenerateMaze());
+        mazeGeneratingServer.start();
+
     }
+
+//    @Override
+//    public void generateMaze(int rows, int cols) {
+//        maze = generator.generate(rows, cols);
+//        goalRow=maze.getGoalPosition().getRowIndex();
+//        goalCol=maze.getGoalPosition().getColumnIndex();
+//        solution=null;
+//        setChanged();
+//        notifyObservers("maze generated");
+//        //start position:
+//        restartMaze();
+//    }
 
     @Override
     public void generateMaze(int rows, int cols) {
-        maze = generator.generate(rows, cols);
-        goalRow=maze.getGoalPosition().getRowIndex();
-        goalCol=maze.getGoalPosition().getColumnIndex();
+//        maze = generator.generate(rows, cols);
+//        goalRow=maze.getGoalPosition().getRowIndex();
+//        goalCol=maze.getGoalPosition().getColumnIndex();
+
+        reachedGoal = false;
         solution=null;
         setChanged();
-        notifyObservers("maze generated");
-        //start position:
-        restartMaze();
+        try {
+            Client client = new Client(InetAddress.getLocalHost(), 4002, (inFromServer, outToServer) -> {
+                try {
+                    ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
+                    toServer.flush();
+                    int[] mazeDimensions = new int[]{rows, cols};
+                    toServer.writeObject(mazeDimensions);
+                    toServer.flush();
+
+                    ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+                    byte[] compressedMaze = (byte[])fromServer.readObject();
+                    InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
+                    byte[] decompressedMaze = new byte[rows*cols + 20];
+                    is.read(decompressedMaze);
+                    maze = new Maze(decompressedMaze);
+                    goalRow=maze.getGoalPosition().getRowIndex();
+                    goalCol=maze.getGoalPosition().getColumnIndex();
+                    notifyObservers("maze generated");
+                    //start position:
+                    movePlayer(maze.getStartPosition().getRowIndex(), maze.getStartPosition().getColumnIndex());
+
+                } catch (Exception e) {
+                    notifyObservers("Error:" + e.getMessage());
+                }
+            });
+            client.communicateWithServer();
+
+        } catch (Exception e) {
+            setChanged();
+            notifyObservers("Error" + e.getMessage());
+        }
+
     }
+
 
     @Override
     public void restartMaze(){
