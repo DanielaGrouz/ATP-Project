@@ -37,11 +37,6 @@ import java.util.*;
 public class MyViewController implements IView ,Observer, Initializable{
     public MyViewModel viewModel;
 
-    public void setViewModel(MyViewModel viewModel) {
-        this.viewModel = viewModel;
-        this.viewModel.addObserver(this);
-    }
-
     public TextField textField_mazeRows;
     public TextField textField_mazeColumns;
     public MazeDisplayer mazeDisplayer;
@@ -65,6 +60,11 @@ public class MyViewController implements IView ,Observer, Initializable{
     private boolean dragging = false;
     private int dragPrevRow = -1;
     private int dragPrevCol = -1;
+
+    public void setViewModel(MyViewModel viewModel) {
+        this.viewModel = viewModel;
+        this.viewModel.addObserver(this);
+    }
 
     public String getUpdatePlayerRow() {
         return updatePlayerRow.get();
@@ -144,7 +144,7 @@ public class MyViewController implements IView ,Observer, Initializable{
             else if (dRow == 1 && dCol == 1) dir = MovementDirection.DOWN_RIGHT;
 
             if (dir != null) {
-                boolean moved = viewModel.movePlayer(dir);
+                boolean moved = viewModel.updatePlayerLocation(dir);
                 if (moved) {
                     dragPrevRow = viewModel.getPlayerRow();
                     dragPrevCol = viewModel.getPlayerCol();
@@ -160,7 +160,6 @@ public class MyViewController implements IView ,Observer, Initializable{
             event.consume();
         });
     }
-
 
     public void generateMaze(ActionEvent actionEvent) {
         try {
@@ -299,21 +298,6 @@ public class MyViewController implements IView ,Observer, Initializable{
     }
 
 
-    public void properties(ActionEvent actionEvent) {
-        Properties props = loadProperties();
-        if (props.size()!=0){
-            StringBuilder sb = new StringBuilder();
-            for (String key : props.stringPropertyNames()) {
-                sb.append(key).append(" = ").append(props.getProperty(key)).append("\n");
-            }
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Application Properties");
-            alert.setHeaderText("Configuration");
-            alert.setContentText(sb.toString());
-            alert.showAndWait();
-        }
-    }
 
     public void exit(Event event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -438,7 +422,7 @@ public class MyViewController implements IView ,Observer, Initializable{
         else if (dRow == 1 && dCol == 1) dir = MovementDirection.DOWN_RIGHT;
 
         if (dir != null) {
-            viewModel.movePlayer(dir);
+            viewModel.updatePlayerLocation(dir);
         }
 
         mazeDisplayer.requestFocus();
@@ -519,6 +503,22 @@ public class MyViewController implements IView ,Observer, Initializable{
             UIUtils.showError("Error: " + ex.getMessage());
         }
         return props;
+    }
+
+    public void properties(ActionEvent actionEvent) {
+        Properties props = loadProperties();
+        if (props.size()!=0){
+            StringBuilder sb = new StringBuilder();
+            for (String key : props.stringPropertyNames()) {
+                sb.append(key).append(" = ").append(props.getProperty(key)).append("\n");
+            }
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Application Properties");
+            alert.setHeaderText("Configuration");
+            alert.setContentText(sb.toString());
+            alert.showAndWait();
+        }
     }
 
     public void help(ActionEvent actionEvent) {

@@ -1,7 +1,9 @@
+/* Root background gradient */
 .root {
     -fx-background-color: linear-gradient(to bottom, #e0f7fa, #ffffff);
 }
 
+/* Button style */
 Button {
     -fx-text-fill: white;
     -fx-font-family: "Arial Narrow";
@@ -10,6 +12,7 @@ Button {
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
 }
 
+/* Button hover effect */
 Button:hover {
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
@@ -20,6 +23,7 @@ Button:hover {
     -fx-content-display: LEFT;
 }
 
+/* Disabled button style */
 .button:disabled {
     -fx-background-color: #dddddd;
     -fx-text-fill: gray;
@@ -27,19 +31,23 @@ Button:hover {
     -fx-cursor: default;
 }
 
+/* Vertical scroll bar background */
 .scroll-bar:vertical {
     -fx-background-color: transparent;
 }
 
+/* Scroll bar thumb style */
 .scroll-bar .thumb {
     -fx-background-color: #90caf9;
     -fx-background-radius: 10;
 }
 
+/* Menu item hover effect */
 .menu-item:hover {
     -fx-background-color: #1abc9c;
 }
 
+/* Dark theme class */
 .dark {
     -fx-base: #202020;
     -fx-background-color: #202020;
