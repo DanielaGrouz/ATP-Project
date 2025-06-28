@@ -78,18 +78,18 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Options">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#properties" text="Properties" />
-                                <MenuItem text="Settings" onAction="#settings" />
+                                <MenuItem mnemonicParsing="false" onAction="#showProperties" text="Properties" />
+                                <MenuItem text="Settings" onAction="#showSettings" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#help" text="Help" />
+                                <MenuItem mnemonicParsing="false" onAction="#showHelp" text="Help" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="About">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
+                                <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Exit">
