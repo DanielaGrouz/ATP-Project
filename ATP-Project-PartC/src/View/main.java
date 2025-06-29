@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ViewModel.MyViewModel;
 import javafx.scene.image.Image;
+import java.io.InputStream;
 
 /**
  * Main class for launching the Maze JavaFX application.
@@ -41,8 +42,10 @@ public class main extends Application {
         viewModel.addObserver(view);
 
         //set the application icon
-        primaryStage.getIcons().add(new Image("file:./ATP-Project-PartC/resources/images/icon.png"));
-
+        InputStream iconStream = getClass().getResourceAsStream("/images/icon.png");
+        if (iconStream != null) {
+            primaryStage.getIcons().add(new Image(iconStream));
+        }
         //set window title and size
         primaryStage.setTitle("Maze Project");
         primaryStage.setScene(new Scene(root, 1000, 650));

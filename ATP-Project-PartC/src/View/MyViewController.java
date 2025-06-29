@@ -276,7 +276,7 @@ public class MyViewController implements IView ,Observer, Initializable{
         FileChooser fc = new FileChooser();
         fc.setTitle("Open maze");
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Maze files (*.txt)", "*.txt"));
-        fc.setInitialDirectory(new File("./ATP-Project-PartC/resources"));
+        fc.setInitialDirectory(new File(System.getProperty("user.home")));
 
         File file = fc.showOpenDialog(null);
         if (file != null) {
@@ -289,10 +289,15 @@ public class MyViewController implements IView ,Observer, Initializable{
      * @param actionEvent the event from the save file menu item
      */
     public void saveFile(ActionEvent actionEvent) {
+        if (viewModel.getMaze()==null){
+            UIUtils.showError("No maze to save. Please generate a maze first.");
+            return;
+        }
+
         FileChooser fc = new FileChooser();
         fc.setTitle("Save  maze");
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Maze files (*.txt)", "*.txt"));
-        fc.setInitialDirectory(new File("./ATP-Project-PartC/resources"));
+        fc.setInitialDirectory(new File(System.getProperty("user.home")));
 
         //set a default file name
         String defaultFileName = "myMaze.txt"; //file name
@@ -331,7 +336,7 @@ public class MyViewController implements IView ,Observer, Initializable{
         FileChooser fc = new FileChooser();
         fc.setTitle("Create New Maze File");
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Maze files (*.txt)", "*.txt"));
-        fc.setInitialDirectory(new File("./ATP-Project-PartC/resources"));
+        fc.setInitialDirectory(new File(System.getProperty("user.home")));
         fc.setInitialFileName("newMaze.txt");
 
         //prompt for maze size
