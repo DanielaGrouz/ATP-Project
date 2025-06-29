@@ -14,7 +14,6 @@ An educational and interactive maze-solving project built in Java using object-o
 - **Custom Compression** (via Output/Input Streams)
 - **JUnit 5** for Unit Testing
 - **Maven** for Build Management
-- **Log4j2** for Logging
 
 ---
 
