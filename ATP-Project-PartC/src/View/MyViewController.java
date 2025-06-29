@@ -37,29 +37,33 @@ import java.util.*;
  * Handles user actions, updates the view, and communicates with the ViewModel.
  */
 public class MyViewController implements IView ,Observer, Initializable{
-    public MyViewModel viewModel;
-
+    private MyViewModel viewModel; //used for communication between View and Model
+    //UI controls for maze size input and displaying the maze
     public TextField textField_mazeRows;
     public TextField textField_mazeColumns;
     public MazeDisplayer mazeDisplayer;
+    //labels for showing current player and goal positions
     public Label playerRow;
     public Label playerCol;
     public Label goalRow;
     public Label goalCol;
+    //buttons for solving and restarting the maze
     public Button solveButton;
     public Button restartButton;
+    //the main container for the UI
     public BorderPane mainPane;
-
-    StringProperty updatePlayerRow = new SimpleStringProperty();
-    StringProperty updatePlayerCol = new SimpleStringProperty();
-    StringProperty updateGoalRow = new SimpleStringProperty();
-    StringProperty updateGoalCol = new SimpleStringProperty();
-
+    //properties to bind player and goal position to UI labels
+    private StringProperty updatePlayerRow = new SimpleStringProperty();
+    private StringProperty updatePlayerCol = new SimpleStringProperty();
+    private StringProperty updateGoalRow = new SimpleStringProperty();
+    private StringProperty updateGoalCol = new SimpleStringProperty();
+    //music for the game
     private MediaPlayer backgroundMusic = null;
     private MediaPlayer winMusic = null;
-
+    //UI status
     private boolean isDarkMode = false;
     private boolean dragging = false;
+    //previous position used when dragging the player
     private int dragPrevRow = -1;
     private int dragPrevCol = -1;
 
@@ -242,7 +246,6 @@ public class MyViewController implements IView ,Observer, Initializable{
         catch (Exception e){
             UIUtils.showError("Please enter whole numbers only in the rows and columns fields.");
         }
-
     }
 
     /**
@@ -315,11 +318,9 @@ public class MyViewController implements IView ,Observer, Initializable{
         alert.setTitle("New Maze File");
         alert.setHeaderText("Create a new empty maze?");
         alert.setContentText("This will clear the current maze. Unsaved work will be lost.");
-
         ButtonType yes = new ButtonType("Yes");
         ButtonType no = new ButtonType("No");
         alert.getButtonTypes().setAll(yes, no);
-
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isEmpty() || result.get() != yes) {
             actionEvent.consume();
@@ -343,13 +344,11 @@ public class MyViewController implements IView ,Observer, Initializable{
         inputGrid.add(rowsInput, 1, 0);
         inputGrid.add(new Label("Columns:"), 0, 1);
         inputGrid.add(colsInput, 1, 1);
-
         Alert inputDialog = new Alert(Alert.AlertType.CONFIRMATION);
         inputDialog.setTitle("Maze Size");
         inputDialog.setHeaderText("Enter number of rows and columns");
         inputDialog.getDialogPane().setContent(inputGrid);
         Optional<ButtonType> sizeResult = inputDialog.showAndWait();
-
         if (sizeResult.isEmpty() || sizeResult.get() != ButtonType.OK)
             return;
 
@@ -391,22 +390,20 @@ public class MyViewController implements IView ,Observer, Initializable{
         alert.setTitle("Confirm Exit");
         alert.setHeaderText(null);
         alert.setContentText("Are you sure you want to exit?");
-
         ButtonType yes = new ButtonType("Yes");
         ButtonType no  = new ButtonType("No");
         alert.getButtonTypes().setAll(yes, no);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == yes) {
             Platform.exit(); //close JavaFX Application Thread
-            viewModel.exit();
-            System.exit(0);
+            viewModel.exit(); //call ViewModel exit for cleanup
+            System.exit(0); //forcefully exit the program
         }
         else {
-            if (event != null) {
+            if (event != null) { //if user cancels, consume the event to prevent closing
                 event.consume();
             }
         }
-
     }
 
     /**
@@ -449,12 +446,12 @@ public class MyViewController implements IView ,Observer, Initializable{
     @Override
     public void update(Observable o, Object arg) {
         String change = (String) arg;
-
+        //check if the update is an error message
         if (change.startsWith("Error:")) {
             UIUtils.showError(change.substring(6).trim());
             return;
         }
-
+        //handle the update type and call the relevant method
         switch (change){
             case "maze generated" -> mazeGenerated();
             case "player moved" -> playerMoved();
@@ -476,7 +473,6 @@ public class MyViewController implements IView ,Observer, Initializable{
      * Updates the player's position on the maze and in the UI.
      */
     private void playerMoved() {
-        System.out.println("Player moved to: " + viewModel.getPlayerRow() + "," + viewModel.getPlayerCol());
         setPlayerPosition(viewModel.getPlayerRow(), viewModel.getPlayerCol());
     }
 
@@ -497,7 +493,6 @@ public class MyViewController implements IView ,Observer, Initializable{
      * Plays win music and shows a congratulation dialog.
      */
     private void goalReached() {
-        System.out.println(">> ViewController: Reached goal!");
         playerMoved();
         playWinMusic();
 
@@ -596,7 +591,6 @@ public class MyViewController implements IView ,Observer, Initializable{
             for (String key : props.stringPropertyNames()) {
                 sb.append(key).append(" = ").append(props.getProperty(key)).append("\n");
             }
-
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Application Properties");
             alert.setHeaderText("Configuration");
@@ -761,5 +755,4 @@ public class MyViewController implements IView ,Observer, Initializable{
         settingsStage.initModality(Modality.APPLICATION_MODAL); //block the main window
         settingsStage.show();
     }
-
 }
