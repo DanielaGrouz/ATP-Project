@@ -106,9 +106,9 @@
         <ScrollPane fx:id="mazeScrollPane" pannable="true" BorderPane.alignment="CENTER" prefWidth="600" prefHeight="600" >
             <content>
                 <MazeDisplayer fx:id="mazeDisplayer"
-                               imageFileNamePlayer="./ATP-Project-PartC/resources/images/mario.png"
-                               imageFileNameGoal="./ATP-Project-PartC/resources/images/star.png"
-                               imageFileNameWall="./ATP-Project-PartC/resources/images/wall.png"
+                               imageFileNamePlayer="/images/mario.png"
+                               imageFileNameGoal="/images/star.png"
+                               imageFileNameWall="/images/wall.png"
                                onKeyPressed="#keyPressed"
                 />
             </content>

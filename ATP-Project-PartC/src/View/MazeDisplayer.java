@@ -9,8 +9,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.util.Objects;
 
 /**
  * MazeDisplayer is a custom JavaFX Canvas that displays a maze, the player, the goal, and the solution path.
@@ -445,16 +444,30 @@ public class MazeDisplayer extends Canvas {
      */
     public void loadImagesOnce() {
         if (playerImg == null) {
-            try { playerImg = new Image(new FileInputStream(getImageFileNamePlayer())); }
-            catch (FileNotFoundException e) { UIUtils.showError("Player image not found"); }
+            try {
+                playerImg = new Image(Objects.requireNonNull(getClass().getResourceAsStream(getImageFileNamePlayer())));
+                if (playerImg.isError()) throw new Exception();
+            } catch (Exception e) {
+                UIUtils.showError("Player image not found");
+            }
         }
+
         if (wallImg == null) {
-            try { wallImg = new Image(new FileInputStream(getImageFileNameWall())); }
-            catch (FileNotFoundException e) { UIUtils.showError("Wall image not found"); }
+            try {
+                wallImg = new Image(Objects.requireNonNull(getClass().getResourceAsStream(getImageFileNameWall())));
+                if (wallImg.isError()) throw new Exception();
+            } catch (Exception e) {
+                UIUtils.showError("Wall image not found");
+            }
         }
+
         if (goalImg == null) {
-            try { goalImg = new Image(new FileInputStream(getImageFileNameGoal())); }
-            catch (FileNotFoundException e) { UIUtils.showError("Goal image not found"); }
+            try {
+                goalImg = new Image(Objects.requireNonNull(getClass().getResourceAsStream(getImageFileNameGoal())));
+                if (goalImg.isError()) throw new Exception();
+            } catch (Exception e) {
+                UIUtils.showError("Goal image not found");
+            }
         }
     }
 
