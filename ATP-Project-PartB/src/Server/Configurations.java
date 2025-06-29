@@ -20,9 +20,8 @@ public class Configurations {
      */
     private Configurations(){
         try {
-            //InputStream input = Files.newInputStream(Paths.get("C:\\Users\\97254\\Documents\\config.properties"));
-            InputStream input = Files.newInputStream(Paths.get("./ATP-Project-PartC/resources/config.properties"));
-            //InputStream input = getClass().getClassLoader().getResourceAsStream("/config.properties");
+            //InputStream input = Files.newInputStream(Paths.get("./ATP-Project-PartC/resources/config.properties"));
+            InputStream input = Configurations.class.getResourceAsStream("/config.properties");
             if (input == null) {
                 throw new RuntimeException("Unable to find configuration file");
             }
