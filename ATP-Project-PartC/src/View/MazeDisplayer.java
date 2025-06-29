@@ -219,28 +219,6 @@ public class MazeDisplayer extends Canvas {
     }
 
     /**
-     * Paints a cell in green (used for the solution path).
-     * @param r The row index.
-     * @param c The column index.
-     * @param graphicsContext The graphics context to draw on.
-     * @param Height The height of a cell.
-     * @param Width The width of a cell.
-     */
-    private void paintPosition(int r, int c, GraphicsContext graphicsContext, double Height, double Width) {
-        if (maze != null) {
-            double cellHeight = Height;
-            double cellWidth = Width;
-            double x = c * cellWidth;
-            double y = r * cellHeight;
-
-            graphicsContext.setGlobalAlpha(0.5);
-            graphicsContext.setFill(Color.GREEN);
-            graphicsContext.fillRect(x, y, cellWidth, cellHeight);
-            graphicsContext.setGlobalAlpha(1.0);
-        }
-    }
-
-    /**
      * Draws the maze walls as red rectangles or images.
      * @param graphicsContext The graphics context to draw on.
      * @param cellHeight The height of a cell.
@@ -311,6 +289,28 @@ public class MazeDisplayer extends Canvas {
                 //call the function that add jellybean
                 paintPosition(row, col, graphicsContext, cellHeight, cellWidth);
             }
+        }
+    }
+
+    /**
+     * Paints a cell in green (used for the solution path).
+     * @param r The row index.
+     * @param c The column index.
+     * @param graphicsContext The graphics context to draw on.
+     * @param Height The height of a cell.
+     * @param Width The width of a cell.
+     */
+    private void paintPosition(int r, int c, GraphicsContext graphicsContext, double Height, double Width) {
+        if (maze != null) {
+            double cellHeight = Height;
+            double cellWidth = Width;
+            double x = c * cellWidth;
+            double y = r * cellHeight;
+
+            graphicsContext.setGlobalAlpha(0.5);
+            graphicsContext.setFill(Color.GREEN);
+            graphicsContext.fillRect(x, y, cellWidth, cellHeight);
+            graphicsContext.setGlobalAlpha(1.0);
         }
     }
 
